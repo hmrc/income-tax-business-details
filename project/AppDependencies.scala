@@ -1,5 +1,4 @@
 import play.sbt.PlayImport
-import play.sbt.PlayImport.caffeine
 import sbt.Keys.libraryDependencies
 import sbt._
 
@@ -25,8 +24,7 @@ object AppDependencies {
     "uk.gov.hmrc.mongo"       %% "hmrc-mongo-test-play-30"    % hmrcMongoVersion            % Test,
     "org.mockito" % "mockito-core" % mockitoVersion % Test,
     "com.github.tomakehurst" % "wiremock" % wiremockVersion % Test,
-    "org.scalatest"       %% "scalatest"              % "3.2.19" % Test,
-    caffeine
+    "org.scalatest"       %% "scalatest"              % "3.2.19" % Test
   )
 
   val it = Seq.empty
