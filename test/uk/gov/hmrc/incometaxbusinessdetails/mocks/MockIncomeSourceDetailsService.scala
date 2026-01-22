@@ -16,8 +16,8 @@
 
 package uk.gov.hmrc.incometaxbusinessdetails.mocks
 
-import models.hip.core.{NinoErrorModel, NinoModel}
-import models.hip.incomeSourceDetails.{IncomeSourceDetailsError, IncomeSourceDetailsModel}
+import uk.gov.hmrc.incometaxbusinessdetails.models.hip.core.{NinoErrorModel, NinoModel}
+import uk.gov.hmrc.incometaxbusinessdetails.models.hip.incomeSourceDetails.{IncomeSourceDetailsError, IncomeSourceDetailsModel}
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.{mock, reset, when}
 import org.mockito.stubbing.OngoingStubbing
@@ -28,6 +28,8 @@ import play.api.http.Status.{INTERNAL_SERVER_ERROR, OK}
 import play.api.libs.json.Json
 import play.api.mvc.Result
 import play.api.mvc.Results.Status
+import uk.gov.hmrc.incometaxbusinessdetails.constants.BaseTestConstants.mtdRef
+import uk.gov.hmrc.incometaxbusinessdetails.services.IncomeSourceDetailsService
 
 import scala.concurrent.Future
 

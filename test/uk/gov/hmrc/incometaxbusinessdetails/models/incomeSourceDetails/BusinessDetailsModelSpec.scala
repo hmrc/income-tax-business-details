@@ -16,10 +16,12 @@
 
 package uk.gov.hmrc.incometaxbusinessdetails.models.incomeSourceDetails
 
-import models.hip.incomeSourceDetails.BusinessDetailsModel
-import models.hip.incomeSourceDetails.BusinessDetailsModel.*
+import uk.gov.hmrc.incometaxbusinessdetails.models.hip.incomeSourceDetails.BusinessDetailsModel
+import uk.gov.hmrc.incometaxbusinessdetails.models.hip.incomeSourceDetails.BusinessDetailsModel.*
 import org.scalatest.matchers.should.Matchers
 import play.api.libs.json.*
+import uk.gov.hmrc.incometaxbusinessdetails.constants.HipBusinessDetailsTestConstants.*
+import uk.gov.hmrc.incometaxbusinessdetails.utils.TestSupport
 
 class BusinessDetailsModelSpec extends TestSupport with Matchers {
 

@@ -16,11 +16,14 @@
 
 package uk.gov.hmrc.incometaxbusinessdetails.controllers
 
-import controllers.predicates.AuthenticationPredicate
+import uk.gov.hmrc.incometaxbusinessdetails.controllers.predicates.AuthenticationPredicate
 import play.api.http.Status
 import play.api.test.FakeRequest
 import play.api.test.Helpers.stubControllerComponents
 import uk.gov.hmrc.auth.core.MissingBearerToken
+import uk.gov.hmrc.incometaxbusinessdetails.constants.BaseTestConstants.testNino
+import uk.gov.hmrc.incometaxbusinessdetails.constants.HipIncomeSourceDetailsTestConstants.{testIncomeSourceDetailsError, testIncomeSourceDetailsModel}
+import uk.gov.hmrc.incometaxbusinessdetails.mocks.{MockBusinessDetailsService, MockMicroserviceAuthConnector}
 
 import scala.concurrent.Future
 

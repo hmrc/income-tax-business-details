@@ -16,11 +16,13 @@
 
 package uk.gov.hmrc.incometaxbusinessdetails.connectors.hip
 
+import uk.gov.hmrc.incometaxbusinessdetails.constants.BaseTestConstants._
+import uk.gov.hmrc.incometaxbusinessdetails.constants.HipIncomeSourceDetailsTestConstants._
+import uk.gov.hmrc.incometaxbusinessdetails.mocks.MockHttpV2
 import uk.gov.hmrc.incometaxbusinessdetails.models.hip.GetBusinessDetailsHipApi
 import uk.gov.hmrc.incometaxbusinessdetails.models.hip.incomeSourceDetails.{IncomeSourceDetailsError, IncomeSourceDetailsNotFound, MtdId, Nino}
 import play.mvc.Http.Status
 import uk.gov.hmrc.http.HttpResponse
-import uk.gov.hmrc.incometaxbusinessdetails.mocks.MockHttpV2
 import uk.gov.hmrc.incometaxbusinessdetails.utils.TestSupport
 
 class GetBusinessDetailsConnectorSpec extends TestSupport with MockHttpV2 {

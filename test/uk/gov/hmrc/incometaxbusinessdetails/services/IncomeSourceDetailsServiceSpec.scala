@@ -21,12 +21,17 @@ import play.api.http.Status
 import play.api.libs.json.Json
 import play.api.mvc.Result
 import play.api.test.Helpers.{contentAsJson, defaultAwaitTimeout, status}
+import uk.gov.hmrc.incometaxbusinessdetails.config.AppConfig
+import uk.gov.hmrc.incometaxbusinessdetails.constants.BaseTestConstants.mtdRef
+import uk.gov.hmrc.incometaxbusinessdetails.constants.HipIncomeSourceDetailsTestConstants
+import uk.gov.hmrc.incometaxbusinessdetails.mocks.MockGetBusinessDetailsConnector
+import uk.gov.hmrc.incometaxbusinessdetails.utils.TestSupport
 
 import scala.concurrent.Future
 
 class IncomeSourceDetailsServiceSpec extends TestSupport with MockGetBusinessDetailsConnector {
 
-  val mockAppConfig = mock[MicroserviceAppConfig]
+  val mockAppConfig: AppConfig = mock[AppConfig]
   object TestIncomeSourceDetailsService extends IncomeSourceDetailsService(mockGetBusinessDetailsConnector, mockAppConfig)
 
   "The IncomeSourceDetailsService" when {
@@ -38,8 +43,8 @@ class IncomeSourceDetailsServiceSpec extends TestSupport with MockGetBusinessDet
       "a successful response is returned from the IncomeSourceDetailsConnector" should {
 
         "return a correctly formatted IncomeSourceDetailsModel" in {
-          val resp: models.hip.incomeSourceDetails.IncomeSourceDetailsResponseModel = HipIncomeSourceDetailsTestConstants.testIncomeSourceDetailsModel
-          mockHipGetBusinessDetailsResult(resp, models.hip.incomeSourceDetails.MtdId)
+          val resp: uk.gov.hmrc.incometaxbusinessdetails.models.hip.incomeSourceDetails.IncomeSourceDetailsResponseModel = HipIncomeSourceDetailsTestConstants.testIncomeSourceDetailsModel
+          mockHipGetBusinessDetailsResult(resp, uk.gov.hmrc.incometaxbusinessdetails.models.hip.incomeSourceDetails.MtdId)
           status(result) shouldBe Status.OK
           contentAsJson(result) shouldBe Json.toJson(HipIncomeSourceDetailsTestConstants.testIncomeSourceDetailsModel)
         }
@@ -48,7 +53,7 @@ class IncomeSourceDetailsServiceSpec extends TestSupport with MockGetBusinessDet
       "an Error Response is returned from the IncomeSourceDetailsConnector" should {
 
         "return a correctly formatted DesBusinessDetailsError model" in {
-          mockHipGetBusinessDetailsResult(HipIncomeSourceDetailsTestConstants.testIncomeSourceDetailsError, models.hip.incomeSourceDetails.MtdId)
+          mockHipGetBusinessDetailsResult(HipIncomeSourceDetailsTestConstants.testIncomeSourceDetailsError, uk.gov.hmrc.incometaxbusinessdetails.models.hip.incomeSourceDetails.MtdId)
           status(result) shouldBe Status.INTERNAL_SERVER_ERROR
           contentAsJson(result) shouldBe Json.toJson(HipIncomeSourceDetailsTestConstants.testIncomeSourceDetailsError)
         }
@@ -62,8 +67,8 @@ class IncomeSourceDetailsServiceSpec extends TestSupport with MockGetBusinessDet
       "a successful response is returned from the IncomeSourceDetailsConnector" should {
 
         "return a correctly formatted NinoModel" in {
-          val resp: models.hip.incomeSourceDetails.IncomeSourceDetailsResponseModel = HipIncomeSourceDetailsTestConstants.testIncomeSourceDetailsModel
-          mockHipGetBusinessDetailsResult(resp, models.hip.incomeSourceDetails.MtdId)
+          val resp: uk.gov.hmrc.incometaxbusinessdetails.models.hip.incomeSourceDetails.IncomeSourceDetailsResponseModel = HipIncomeSourceDetailsTestConstants.testIncomeSourceDetailsModel
+          mockHipGetBusinessDetailsResult(resp, uk.gov.hmrc.incometaxbusinessdetails.models.hip.incomeSourceDetails.MtdId)
           status(result) shouldBe Status.OK
           contentAsJson(result) shouldBe Json.toJson(HipIncomeSourceDetailsTestConstants.testNinoModel)
         }
@@ -72,7 +77,7 @@ class IncomeSourceDetailsServiceSpec extends TestSupport with MockGetBusinessDet
       "an Error Response is returned from the IncomeSourceDetailsConnector" should {
 
         "return a correctly formatted IncomeSourceDetailsError model" in {
-          mockHipGetBusinessDetailsResult(HipIncomeSourceDetailsTestConstants.testIncomeSourceDetailsError, models.hip.incomeSourceDetails.MtdId)
+          mockHipGetBusinessDetailsResult(HipIncomeSourceDetailsTestConstants.testIncomeSourceDetailsError, uk.gov.hmrc.incometaxbusinessdetails.models.hip.incomeSourceDetails.MtdId)
           status(result) shouldBe Status.INTERNAL_SERVER_ERROR
           contentAsJson(result) shouldBe Json.toJson(HipIncomeSourceDetailsTestConstants.testNinoError)
         }

@@ -41,7 +41,7 @@ trait TestSupport extends AnyWordSpec with AnyWordSpecLike with Matchers with Op
   implicit val ec: ExecutionContext = app.injector.instanceOf[ExecutionContext]
   implicit val hc: HeaderCarrier = HeaderCarrier()
 
-  val microserviceAppConfig: AppConfig = app.injector.instanceOf[MicroserviceAppConfig]
+  val microserviceAppConfig: AppConfig = app.injector.instanceOf[AppConfig]
 
   implicit val defaultPatience: PatienceConfig = PatienceConfig(timeout = Span(3, Seconds), interval = Span(5, Millis))
 }

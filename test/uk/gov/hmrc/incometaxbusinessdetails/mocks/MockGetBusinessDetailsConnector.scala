@@ -16,13 +16,15 @@
 
 package uk.gov.hmrc.incometaxbusinessdetails.mocks
 
-import models.hip.incomeSourceDetails.{BusinessDetailsAccessType, IncomeSourceDetailsResponseModel, MtdId, Nino}
+import uk.gov.hmrc.incometaxbusinessdetails.models.hip.incomeSourceDetails.{BusinessDetailsAccessType, IncomeSourceDetailsResponseModel, MtdId, Nino}
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.{mock, reset, when}
 import org.mockito.stubbing.OngoingStubbing
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
 import org.scalatest.{BeforeAndAfterEach, OptionValues}
+import uk.gov.hmrc.incometaxbusinessdetails.connectors.hip.GetBusinessDetailsConnector
+import uk.gov.hmrc.incometaxbusinessdetails.constants.BaseTestConstants.{mtdRef, testNino}
 
 import scala.concurrent.Future
 

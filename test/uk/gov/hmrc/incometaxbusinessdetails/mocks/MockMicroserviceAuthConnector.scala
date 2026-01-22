@@ -21,6 +21,8 @@ import org.mockito.Mockito.{doReturn, mock}
 import org.scalatest.BeforeAndAfterEach
 import uk.gov.hmrc.auth.core.syntax.retrieved.authSyntaxForRetrieved
 import uk.gov.hmrc.auth.core.{AffinityGroup, ConfidenceLevel}
+import uk.gov.hmrc.incometaxbusinessdetails.connectors.MicroserviceAuthConnector
+import uk.gov.hmrc.incometaxbusinessdetails.utils.TestSupport
 
 import scala.concurrent.Future
 

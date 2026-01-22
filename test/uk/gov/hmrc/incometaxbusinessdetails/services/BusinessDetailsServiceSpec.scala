@@ -16,19 +16,22 @@
 
 package uk.gov.hmrc.incometaxbusinessdetails.services
 
-import models.hip.GetBusinessDetailsHipApi
-import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar.mock
 import play.api.http.Status
 import play.api.libs.json.Json
 import play.api.mvc.Result
 import play.api.test.Helpers.{contentAsJson, defaultAwaitTimeout, status}
+import uk.gov.hmrc.incometaxbusinessdetails.config.AppConfig
+import uk.gov.hmrc.incometaxbusinessdetails.constants.BaseTestConstants.testNino
+import uk.gov.hmrc.incometaxbusinessdetails.constants.HipIncomeSourceDetailsTestConstants
+import uk.gov.hmrc.incometaxbusinessdetails.mocks.MockGetBusinessDetailsConnector
+import uk.gov.hmrc.incometaxbusinessdetails.utils.TestSupport
 
 import scala.concurrent.Future
 
 class BusinessDetailsServiceSpec extends TestSupport with MockGetBusinessDetailsConnector {
 
-  val mockAppConfig = mock[MicroserviceAppConfig]
+  val mockAppConfig: AppConfig = mock[AppConfig]
   object TestBusinessDetailsService extends BusinessDetailsService(mockGetBusinessDetailsConnector, mockAppConfig)
 
   "The BusinessDetailsService" when {
@@ -40,9 +43,8 @@ class BusinessDetailsServiceSpec extends TestSupport with MockGetBusinessDetails
       "a successful response is returned from the BusinessDetailsConnector" should {
 
         "return a correctly formatted IncomeSourceDetailsModel" in {
-          val resp: models.hip.incomeSourceDetails.IncomeSourceDetailsResponseModel = HipIncomeSourceDetailsTestConstants.testIncomeSourceDetailsModel
-          when(mockAppConfig.hipFeatureSwitchEnabled(GetBusinessDetailsHipApi)).thenReturn(true)
-          mockHipGetBusinessDetailsResult(resp, models.hip.incomeSourceDetails.Nino)
+          val resp: uk.gov.hmrc.incometaxbusinessdetails.models.hip.incomeSourceDetails.IncomeSourceDetailsResponseModel = HipIncomeSourceDetailsTestConstants.testIncomeSourceDetailsModel
+          mockHipGetBusinessDetailsResult(resp, uk.gov.hmrc.incometaxbusinessdetails.models.hip.incomeSourceDetails.Nino)
           status(result) shouldBe Status.OK
           contentAsJson(result) shouldBe Json.toJson(HipIncomeSourceDetailsTestConstants.testIncomeSourceDetailsModel)
         }
@@ -51,8 +53,7 @@ class BusinessDetailsServiceSpec extends TestSupport with MockGetBusinessDetails
       "an Error Response is returned from the BusinessDetailsConnector" should {
 
         "return a correctly formatted DesBusinessDetailsError model" in {
-          when(mockAppConfig.hipFeatureSwitchEnabled(GetBusinessDetailsHipApi)).thenReturn(true)
-          mockHipGetBusinessDetailsResult(HipIncomeSourceDetailsTestConstants.testIncomeSourceDetailsError, models.hip.incomeSourceDetails.Nino)
+          mockHipGetBusinessDetailsResult(HipIncomeSourceDetailsTestConstants.testIncomeSourceDetailsError, uk.gov.hmrc.incometaxbusinessdetails.models.hip.incomeSourceDetails.Nino)
           status(result) shouldBe Status.INTERNAL_SERVER_ERROR
 //          contentAsString(result) shouldEqual(HipIncomeSourceDetailsTestConstants.testIncomeSourceDetailsError.reason)
         }
