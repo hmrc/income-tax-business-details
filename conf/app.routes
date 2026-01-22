@@ -1,3 +1,6 @@
 # microservice specific routes
 
-GET        /hello-world             uk.gov.hmrc.incometaxbusinessdetails.controllers.MicroserviceHelloWorldController.hello
+
+GET        /nino-lookup/:mtdRef                                      uk.gov.hmrc.incometaxbusinessdetails.controllers.IncomeSourceDetailsController.getNino(mtdRef)
+GET        /income-sources/:mtdRef                                   uk.gov.hmrc.incometaxbusinessdetails.controllers.IncomeSourceDetailsController.getIncomeSourceDetails(mtdRef)
+GET        /get-business-details/nino/:nino                          uk.gov.hmrc.incometaxbusinessdetails.controllers.BusinessDetailsController.getBusinessDetails(nino)
