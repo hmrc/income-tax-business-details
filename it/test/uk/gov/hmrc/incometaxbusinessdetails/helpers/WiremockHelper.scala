@@ -170,7 +170,7 @@ trait WiremockHelper {
 
   def buildClient(path: String): WSRequest = {
     ws
-      .url(s"http://localhost:$port/income-tax-view-change$path")
+      .url(s"http://localhost:$port/income-tax-business-details$path")
       .withHttpHeaders("Authorization" -> "Bearer123")
       .withFollowRedirects(false)
   }
