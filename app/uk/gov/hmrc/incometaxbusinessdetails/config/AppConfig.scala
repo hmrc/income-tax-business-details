@@ -16,11 +16,59 @@
 
 package uk.gov.hmrc.incometaxbusinessdetails.config
 
+
+import uk.gov.hmrc.http.HeaderNames
+import uk.gov.hmrc.incometaxbusinessdetails.models.hip.{CreateIncomeSourceHipApi, GetBusinessDetailsHipApi, HipApi}
+import uk.gov.hmrc.incometaxbusinessdetails.utils.DateUtils
+import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
+
+import java.util.{Base64, UUID}
 import javax.inject.{Inject, Singleton}
-import play.api.Configuration
 
 @Singleton
-class AppConfig @Inject()(config: Configuration) {
+class AppConfig @Inject()(servicesConfig: ServicesConfig) {
 
-  val appName: String = config.get[String]("appName")
+  private def loadConfig(key: String) = servicesConfig.getString(key)
+
+
+  val appName: String = servicesConfig.getString("appName")
+  lazy val hipUrl: String = servicesConfig.baseUrl("hip")
+  
+  private def getHipCredentials: String = {
+    val clientId = loadConfig(s"microservice.services.hip.clientId")
+    val secret = loadConfig(s"microservice.services.hip.secret")
+
+    val encoded = Base64.getEncoder.encodeToString(s"$clientId:$secret".getBytes("UTF-8"))
+
+    s"Basic $encoded"
+  }
+
+  def getHIPHeaders(hipApi: HipApi, messageTypeHeaderValue: Option[String] = None): Seq[(String, String)] = {
+    val additionalHeaders: Seq[(String, String)] = {
+      hipApi match {
+        case GetBusinessDetailsHipApi =>
+          Seq(
+            ("X-Originating-System", "MDTPITVC"),
+            ("X-Receipt-Date", DateUtils.nowAsUtc),
+            ("X-Regime-Type", "ITSA"),
+            ("X-Transmitting-System", "HIP")
+          )
+        case CreateIncomeSourceHipApi =>
+          Seq(
+            ("X-Originating-System", "MDTPITVC"),
+            ("X-Receipt-Date", DateUtils.nowAsUtc),
+            ("X-Regime", "ITSA"),
+            ("X-Transmitting-System", "HIP")
+          )
+       
+      }
+    }
+    messageTypeHeaderValue.map(mtv => Seq(("X-Message-Type", mtv))).getOrElse(Seq()) ++ Seq(
+      (HeaderNames.authorisation, getHipCredentials),
+      ("correlationId", UUID.randomUUID().toString)
+    ) ++ additionalHeaders
+  }
+  val confidenceLevel: Int = servicesConfig.getInt("auth.confidenceLevel")
+
 }
+
