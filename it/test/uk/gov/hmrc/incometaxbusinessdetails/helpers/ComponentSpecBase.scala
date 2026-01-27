@@ -46,7 +46,8 @@ trait ComponentSpecBase extends TestSuite with CustomMatchers
     "microservice.services.auth.host" -> mockHost,
     "microservice.services.auth.port" -> mockPort,
     "microservice.services.hip.host" -> mockHost,
-    "microservice.services.hip.port" -> mockPort
+    "microservice.services.hip.port" -> mockPort,
+    "microservice.services.if.url" -> mockUrl
   )
 
   override implicit lazy val app: Application = new GuiceApplicationBuilder()
@@ -82,5 +83,9 @@ trait ComponentSpecBase extends TestSuite with CustomMatchers
     def getIncomeSources(mtdRef: String): WSResponse = get(s"/income-sources/$mtdRef")
 
     def getBusinessDetails(nino: String): WSResponse = get(s"/get-business-details/nino/$nino")
+
+    def putUpdateIncomeSource(body: JsValue): WSResponse = {
+      buildClient("/update-income-source").put(body).futureValue
+    }
   }
 }
