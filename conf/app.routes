@@ -4,5 +4,5 @@
 GET        /nino-lookup/:mtdRef                                      uk.gov.hmrc.incometaxbusinessdetails.controllers.IncomeSourceDetailsController.getNino(mtdRef)
 GET        /income-sources/:mtdRef                                   uk.gov.hmrc.incometaxbusinessdetails.controllers.IncomeSourceDetailsController.getIncomeSourceDetails(mtdRef)
 GET        /get-business-details/nino/:nino                          uk.gov.hmrc.incometaxbusinessdetails.controllers.BusinessDetailsController.getBusinessDetails(nino)
-
-PUT         /update-income-source                                    uk.gov.hmrc.incometaxbusinessdetails.controllers.UpdateIncomeSourceController.updateIncomeSource()
+POST       /create-income-source/business                            uk.gov.hmrc.incometaxbusinessdetails.controllers.CreateBusinessDetailsController.createBusinessDetails()
+PUT        /update-income-source                                     uk.gov.hmrc.incometaxbusinessdetails.controllers.UpdateIncomeSourceController.updateIncomeSource()
