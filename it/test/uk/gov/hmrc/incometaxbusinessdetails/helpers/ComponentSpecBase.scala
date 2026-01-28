@@ -84,6 +84,10 @@ trait ComponentSpecBase extends TestSuite with CustomMatchers
 
     def getBusinessDetails(nino: String): WSResponse = get(s"/get-business-details/nino/$nino")
 
+    def createBusinessDetails(body: JsValue): WSResponse = {
+      buildClient(s"/create-income-source/business").post(body).futureValue
+    }
+    
     def putUpdateIncomeSource(body: JsValue): WSResponse = {
       buildClient("/update-income-source").put(body).futureValue
     }
