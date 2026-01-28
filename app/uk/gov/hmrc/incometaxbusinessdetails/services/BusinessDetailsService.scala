@@ -18,35 +18,27 @@ package uk.gov.hmrc.incometaxbusinessdetails.services
 
 import uk.gov.hmrc.incometaxbusinessdetails.models
 import play.api.Logging
-import play.api.http.Status.OK
-import play.api.libs.json.Json
-import play.api.mvc.Result
-import play.api.mvc.Results.Status
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.incometaxbusinessdetails.config.AppConfig
-import uk.gov.hmrc.incometaxbusinessdetails.connectors.hip.GetBusinessDetailsConnector
+import uk.gov.hmrc.incometaxbusinessdetails.connectors.hip.{GetBusinessDetailsConnector, ViewAndChangeConnector}
+import uk.gov.hmrc.incometaxbusinessdetails.models.hip.incomeSourceDetails.{IncomeSourceDetailsModel, IncomeSourceDetailsResponseModel}
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class BusinessDetailsService @Inject()(val getBusinessDetailsFromHipConnector: GetBusinessDetailsConnector,
+                                       val viewAndChangeConnector: ViewAndChangeConnector,
                                        val appConfig: AppConfig
                                       ) extends Logging {
 
   def getBusinessDetails(nino: String)
                         (implicit headerCarrier: HeaderCarrier,
-                         ec:ExecutionContext): Future[Result] = {
+                         ec:ExecutionContext): Future[IncomeSourceDetailsResponseModel] = {
     logger.debug("Requesting Income Source Details from Connector")
-      getBusinessDetailsFromHipConnector.getBusinessDetails(nino, models.hip.incomeSourceDetails.Nino).map {
-        case success: models.hip.incomeSourceDetails.IncomeSourceDetailsModel =>
-          Status(OK)(Json.toJson(success))
-        case notFound: models.hip.incomeSourceDetails.IncomeSourceDetailsNotFound =>
-          logger.warn(s"Income tax details not found: $notFound")
-          Status(notFound.status)(Json.toJson(notFound))
-        case error:models.hip.incomeSourceDetails.IncomeSourceDetailsError =>
-          logger.error(s"Error Response: $error")
-          Status(error.status)(Json.toJson(error))
+      getBusinessDetailsFromHipConnector.getBusinessDetails(nino, models.hip.incomeSourceDetails.Nino).flatMap{
+        case success: IncomeSourceDetailsModel => Future.successful(success)
+        case _ => viewAndChangeConnector.getBusinessDetails(nino, models.hip.incomeSourceDetails.Nino)
       }
   }
 }

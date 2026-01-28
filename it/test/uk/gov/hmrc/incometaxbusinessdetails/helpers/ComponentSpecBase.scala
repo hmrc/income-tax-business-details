@@ -47,6 +47,8 @@ trait ComponentSpecBase extends TestSuite with CustomMatchers
     "microservice.services.auth.port" -> mockPort,
     "microservice.services.hip.host" -> mockHost,
     "microservice.services.hip.port" -> mockPort,
+    "microservice.services.income-tax-view-change.host" -> mockHost,
+    "microservice.services.income-tax-view-change.port" -> mockPort
     "microservice.services.if.url" -> mockUrl
   )
 
@@ -83,13 +85,5 @@ trait ComponentSpecBase extends TestSuite with CustomMatchers
     def getIncomeSources(mtdRef: String): WSResponse = get(s"/income-sources/$mtdRef")
 
     def getBusinessDetails(nino: String): WSResponse = get(s"/get-business-details/nino/$nino")
-
-    def createBusinessDetails(body: JsValue): WSResponse = {
-      buildClient(s"/create-income-source/business").post(body).futureValue
-    }
-    
-    def putUpdateIncomeSource(body: JsValue): WSResponse = {
-      buildClient("/update-income-source").put(body).futureValue
-    }
   }
 }

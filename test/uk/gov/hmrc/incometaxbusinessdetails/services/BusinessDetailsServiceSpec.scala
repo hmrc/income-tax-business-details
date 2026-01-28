@@ -22,6 +22,7 @@ import play.api.libs.json.Json
 import play.api.mvc.Result
 import play.api.test.Helpers.{contentAsJson, defaultAwaitTimeout, status}
 import uk.gov.hmrc.incometaxbusinessdetails.config.AppConfig
+import uk.gov.hmrc.incometaxbusinessdetails.connectors.hip.ViewAndChangeConnector
 import uk.gov.hmrc.incometaxbusinessdetails.constants.BaseTestConstants.testNino
 import uk.gov.hmrc.incometaxbusinessdetails.constants.HipIncomeSourceDetailsTestConstants
 import uk.gov.hmrc.incometaxbusinessdetails.mocks.MockGetBusinessDetailsConnector
@@ -32,7 +33,8 @@ import scala.concurrent.Future
 class BusinessDetailsServiceSpec extends TestSupport with MockGetBusinessDetailsConnector {
 
   val mockAppConfig: AppConfig = mock[AppConfig]
-  object TestBusinessDetailsService extends BusinessDetailsService(mockGetBusinessDetailsConnector, mockAppConfig)
+  val mockViewAndChangeConnector = mock[ViewAndChangeConnector]
+  object TestBusinessDetailsService extends BusinessDetailsService(mockGetBusinessDetailsConnector, mockViewAndChangeConnector,  mockAppConfig)
 
   "The BusinessDetailsService" when {
 
