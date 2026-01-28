@@ -69,6 +69,16 @@ class AppConfig @Inject()(servicesConfig: ServicesConfig) {
     ) ++ additionalHeaders
   }
   val confidenceLevel: Int = servicesConfig.getInt("auth.confidenceLevel")
+  
+  val ifUrl: String = loadConfig("microservice.services.if.url")
 
+  def getIFHeaders(api: String): Seq[(String, String)] = {
+    val ifEnvironment: String = loadConfig("microservice.services.if.environment")
+    val ifToken: String = loadConfig(s"microservice.services.if.authorization-token-$api")
+    Seq(
+      "Environment" -> ifEnvironment,
+      "Authorization" -> s"Bearer $ifToken"
+    )
+  }
 }
 
