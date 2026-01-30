@@ -24,15 +24,15 @@ import play.api.test.Helpers.{contentAsJson, defaultAwaitTimeout, status}
 import uk.gov.hmrc.incometaxbusinessdetails.config.AppConfig
 import uk.gov.hmrc.incometaxbusinessdetails.constants.BaseTestConstants.mtdRef
 import uk.gov.hmrc.incometaxbusinessdetails.constants.HipIncomeSourceDetailsTestConstants
-import uk.gov.hmrc.incometaxbusinessdetails.mocks.MockGetBusinessDetailsConnector
+import uk.gov.hmrc.incometaxbusinessdetails.mocks.{MockGetBusinessDetailsConnector, MockViewAndChangeConnector}
 import uk.gov.hmrc.incometaxbusinessdetails.utils.TestSupport
 
 import scala.concurrent.Future
 
-class IncomeSourceDetailsServiceSpec extends TestSupport with MockGetBusinessDetailsConnector {
+class IncomeSourceDetailsServiceSpec extends TestSupport with MockGetBusinessDetailsConnector with MockViewAndChangeConnector {
 
   val mockAppConfig: AppConfig = mock[AppConfig]
-  object TestIncomeSourceDetailsService extends IncomeSourceDetailsService(mockGetBusinessDetailsConnector, mockAppConfig)
+  object TestIncomeSourceDetailsService extends IncomeSourceDetailsService(mockGetBusinessDetailsConnector, mockViewAndChangeConnector, mockAppConfig)
 
   "The IncomeSourceDetailsService" when {
 
@@ -54,10 +54,22 @@ class IncomeSourceDetailsServiceSpec extends TestSupport with MockGetBusinessDet
 
         "return a correctly formatted DesBusinessDetailsError model" in {
           mockHipGetBusinessDetailsResult(HipIncomeSourceDetailsTestConstants.testIncomeSourceDetailsError, uk.gov.hmrc.incometaxbusinessdetails.models.hip.incomeSourceDetails.MtdId)
-          status(result) shouldBe Status.INTERNAL_SERVER_ERROR
-          contentAsJson(result) shouldBe Json.toJson(HipIncomeSourceDetailsTestConstants.testIncomeSourceDetailsError)
+          mockGetBusinessDetailsByMtdidResult()
+          status(result) shouldBe Status.OK
+          contentAsJson(result) shouldBe Json.toJson(HipIncomeSourceDetailsTestConstants.testIncomeSourceDetailsModel)
         }
       }
+
+//ToDo Re-add when error handling removed.
+
+//      "an Error Response is returned from the IncomeSourceDetailsConnector" should {
+//
+//        "return a correctly formatted DesBusinessDetailsError model" in {
+//          mockHipGetBusinessDetailsResult(HipIncomeSourceDetailsTestConstants.testIncomeSourceDetailsError, uk.gov.hmrc.incometaxbusinessdetails.models.hip.incomeSourceDetails.MtdId)
+//          status(result) shouldBe Status.INTERNAL_SERVER_ERROR
+//          contentAsJson(result) shouldBe Json.toJson(HipIncomeSourceDetailsTestConstants.testIncomeSourceDetailsError)
+//        }
+//      }
     }
 
     "getNino method is called when Hip Api is enabled" when {
@@ -78,10 +90,22 @@ class IncomeSourceDetailsServiceSpec extends TestSupport with MockGetBusinessDet
 
         "return a correctly formatted IncomeSourceDetailsError model" in {
           mockHipGetBusinessDetailsResult(HipIncomeSourceDetailsTestConstants.testIncomeSourceDetailsError, uk.gov.hmrc.incometaxbusinessdetails.models.hip.incomeSourceDetails.MtdId)
-          status(result) shouldBe Status.INTERNAL_SERVER_ERROR
-          contentAsJson(result) shouldBe Json.toJson(HipIncomeSourceDetailsTestConstants.testNinoError)
+          mockGetBusinessDetailsByMtdidResult()
+          status(result) shouldBe Status.OK
+          contentAsJson(result) shouldBe Json.toJson(HipIncomeSourceDetailsTestConstants.testIncomeSourceDetailsModel)
         }
       }
+
+//ToDo Re-add when error handling removed.
+
+//      "an Error Response is returned from the IncomeSourceDetailsConnector" should {
+//
+//        "return a correctly formatted IncomeSourceDetailsError model" in {
+//          mockHipGetBusinessDetailsResult(HipIncomeSourceDetailsTestConstants.testIncomeSourceDetailsError, uk.gov.hmrc.incometaxbusinessdetails.models.hip.incomeSourceDetails.MtdId)
+//          status(result) shouldBe Status.INTERNAL_SERVER_ERROR
+//          contentAsJson(result) shouldBe Json.toJson(HipIncomeSourceDetailsTestConstants.testNinoError)
+//        }
+//      }
     }
   }
 }

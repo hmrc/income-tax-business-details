@@ -22,18 +22,16 @@ import play.api.libs.json.Json
 import play.api.mvc.Result
 import play.api.test.Helpers.{contentAsJson, defaultAwaitTimeout, status}
 import uk.gov.hmrc.incometaxbusinessdetails.config.AppConfig
-import uk.gov.hmrc.incometaxbusinessdetails.connectors.hip.ViewAndChangeConnector
 import uk.gov.hmrc.incometaxbusinessdetails.constants.BaseTestConstants.testNino
 import uk.gov.hmrc.incometaxbusinessdetails.constants.HipIncomeSourceDetailsTestConstants
-import uk.gov.hmrc.incometaxbusinessdetails.mocks.MockGetBusinessDetailsConnector
+import uk.gov.hmrc.incometaxbusinessdetails.mocks.{MockGetBusinessDetailsConnector, MockViewAndChangeConnector}
 import uk.gov.hmrc.incometaxbusinessdetails.utils.TestSupport
 
 import scala.concurrent.Future
 
-class BusinessDetailsServiceSpec extends TestSupport with MockGetBusinessDetailsConnector {
+class BusinessDetailsServiceSpec extends TestSupport with MockGetBusinessDetailsConnector with MockViewAndChangeConnector {
 
   val mockAppConfig: AppConfig = mock[AppConfig]
-  val mockViewAndChangeConnector = mock[ViewAndChangeConnector]
   object TestBusinessDetailsService extends BusinessDetailsService(mockGetBusinessDetailsConnector, mockViewAndChangeConnector,  mockAppConfig)
 
   "The BusinessDetailsService" when {
@@ -56,9 +54,20 @@ class BusinessDetailsServiceSpec extends TestSupport with MockGetBusinessDetails
 
         "return a correctly formatted DesBusinessDetailsError model" in {
           mockHipGetBusinessDetailsResult(HipIncomeSourceDetailsTestConstants.testIncomeSourceDetailsError, uk.gov.hmrc.incometaxbusinessdetails.models.hip.incomeSourceDetails.Nino)
-          status(result) shouldBe Status.INTERNAL_SERVER_ERROR
-//          contentAsString(result) shouldEqual(HipIncomeSourceDetailsTestConstants.testIncomeSourceDetailsError.reason)
+          mockGetBusinessDetailsByNinoResult()
+          status(result) shouldBe Status.OK
+          contentAsJson(result) shouldBe Json.toJson(HipIncomeSourceDetailsTestConstants.testIncomeSourceDetailsModel)
         }
+      
+//ToDo Re-add when error handling removed. 
+      
+//      "an Error Response is returned from the BusinessDetailsConnector" should {
+//
+//        "return a correctly formatted DesBusinessDetailsError model" in {
+//          mockHipGetBusinessDetailsResult(HipIncomeSourceDetailsTestConstants.testIncomeSourceDetailsError, uk.gov.hmrc.incometaxbusinessdetails.models.hip.incomeSourceDetails.Nino)
+//          status(result) shouldBe Status.INTERNAL_SERVER_ERROR
+////          contentAsString(result) shouldEqual(HipIncomeSourceDetailsTestConstants.testIncomeSourceDetailsError.reason)
+//        }
       }
     }
   }

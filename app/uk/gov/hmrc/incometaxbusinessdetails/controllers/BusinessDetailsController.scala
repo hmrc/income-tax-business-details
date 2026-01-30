@@ -18,9 +18,7 @@ package uk.gov.hmrc.incometaxbusinessdetails.controllers
 
 import uk.gov.hmrc.incometaxbusinessdetails.controllers.predicates.AuthenticationPredicate
 import play.api.Logging
-import play.api.libs.json.Json
 import play.api.mvc.*
-import uk.gov.hmrc.incometaxbusinessdetails.models.hip.incomeSourceDetails.{IncomeSourceDetailsError, IncomeSourceDetailsModel, IncomeSourceDetailsResponseModel}
 import uk.gov.hmrc.incometaxbusinessdetails.services.BusinessDetailsService
 import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
 
@@ -32,21 +30,8 @@ class BusinessDetailsController @Inject()(val authentication: AuthenticationPred
                                           val businessDetailsService: BusinessDetailsService,
                                           cc: ControllerComponents
                                             )(implicit ec: ExecutionContext) extends BackendController(cc) with Logging {
-  private def handleBusinessDetailsResponse(response: IncomeSourceDetailsResponseModel): Result = {
-    response match {
-      case success: IncomeSourceDetailsModel =>
-        logger.debug(s"Successful Response: $success")
-        Ok(Json.toJson(success))
-      case error: IncomeSourceDetailsError =>
-        logger.error(s"Error Response: $error")
-        Status(error.status)(Json.toJson(error))
-      case _ => Status(1)(Json.toJson("hello")) //toDo Ask Christine
-    }
-  }
 
   def getBusinessDetails(nino: String): Action[AnyContent] = authentication.async { implicit request =>
-    businessDetailsService.getBusinessDetails(nino).map(result =>
-      handleBusinessDetailsResponse(result)
-    )
+    businessDetailsService.getBusinessDetails(nino)
   }
 }
