@@ -54,5 +54,5 @@ object UpdateIncomeSourceIntegrationTestConstants {
   )
 
   val invalidRequestJson = Json.obj()
-  val failureResponse = UpdateIncomeSourceResponseError(Status.INTERNAL_SERVER_ERROR, s"Unexpected failed future, error")
+  val failureResponse = UpdateIncomeSourceResponseError(Status.INTERNAL_SERVER_ERROR, s"Unexpected failed future")
 }

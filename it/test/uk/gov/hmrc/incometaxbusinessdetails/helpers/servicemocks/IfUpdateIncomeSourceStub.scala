@@ -23,7 +23,7 @@ import uk.gov.hmrc.incometaxbusinessdetails.helpers.WiremockHelper
 object IfUpdateIncomeSourceStub {
 
 
-  val url: String ="/income-tax/business-detail/income-source"
+  val url: String ="/update-income-source"
 
   def stubPutIfUpdateIncomeSource(request:String, response:String): Unit = {
     WiremockHelper.stubPut(url,Status.OK,request,response)
