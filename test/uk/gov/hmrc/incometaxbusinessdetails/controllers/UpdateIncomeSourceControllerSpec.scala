@@ -16,17 +16,15 @@
 
 package uk.gov.hmrc.incometaxbusinessdetails.controllers
 
-import uk.gov.hmrc.incometaxbusinessdetails.constants.UpdateIncomeSourceTestConstants._
+import uk.gov.hmrc.incometaxbusinessdetails.constants.UpdateIncomeSourceTestConstants.*
 import uk.gov.hmrc.incometaxbusinessdetails.controllers.predicates.AuthenticationPredicate
-import uk.gov.hmrc.incometaxbusinessdetails.mocks.{MockMicroserviceAuthConnector, MockUpdateIncomeSourceConnector}
+import uk.gov.hmrc.incometaxbusinessdetails.mocks.{MockMicroserviceAuthConnector, MockUpdateIncomeSourceService}
 import play.api.http.Status.{BAD_REQUEST, OK, UNAUTHORIZED}
 import play.api.libs.json.Json
 import play.api.test.Helpers.stubControllerComponents
 import uk.gov.hmrc.auth.core.MissingBearerToken
-
 import scala.concurrent.Future
-
-class UpdateIncomeSourceControllerSpec extends ControllerBaseSpec with MockUpdateIncomeSourceConnector with MockMicroserviceAuthConnector {
+class UpdateIncomeSourceControllerSpec extends ControllerBaseSpec with MockUpdateIncomeSourceService with MockMicroserviceAuthConnector {
 
   "The UpdateIncomeSourceController" when {
 
@@ -36,7 +34,7 @@ class UpdateIncomeSourceControllerSpec extends ControllerBaseSpec with MockUpdat
 
       object TestUpdateIncomeSourceController extends UpdateIncomeSourceController(
         authentication = new AuthenticationPredicate(mockMicroserviceAuthConnector, mockCC, microserviceAppConfig), mockCC,
-        connector = mockUpdateIncomeSourceConnector
+        service = mockUpdateIncomeSourceService
       )
 
       "UpdateIncomeSourceConnector gives a valid response" should {

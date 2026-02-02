@@ -17,13 +17,18 @@
 package uk.gov.hmrc.incometaxbusinessdetails.helpers.servicemocks
 
 import play.api.http.Status
-import play.api.libs.json.{JsValue, Json}
+import play.api.libs.json.Json
+import play.api.libs.json.{JsValue}
 import uk.gov.hmrc.incometaxbusinessdetails.constants.HipIncomeSourceIntegrationTestConstants
 import uk.gov.hmrc.incometaxbusinessdetails.constants.HipIncomeSourceIntegrationTestConstants.{incomeSourceDetailsError, incomeSourceDetailsNotFoundError}
 import uk.gov.hmrc.incometaxbusinessdetails.helpers.WiremockHelper
+import uk.gov.hmrc.incometaxbusinessdetails.models.updateIncomeSource.*
+import uk.gov.hmrc.incometaxbusinessdetails.models.updateIncomeSource.request.UpdateIncomeSourceRequestModel
 import uk.gov.hmrc.incometaxbusinessdetails.models.hip.core.NinoModel
 
 object ViewAndChangeStub {
+
+  val url: String = "/income-tax-view-change/update-income-source"
 
   val viewAndChangeUrl: (String) => String = (mtdRef) => s"""/income-tax-view-change/income-sources/$mtdRef"""
 
@@ -36,6 +41,14 @@ object ViewAndChangeStub {
     WiremockHelper.stubGet(viewAndChangeUrl(nino), Status.OK, response.toString)
   }
 
+  def stubUpdateIncomeSourceSuccess(request: UpdateIncomeSourceRequestModel, response: UpdateIncomeSourceResponseModel): Unit = {
+    WiremockHelper.stubPut(
+      url = url,
+      status = Status.OK,
+      requestBody = Json.toJson(request).toString,
+      responseBody = Json.toJson(response).toString
+    )
+  }
   def stubGetBusinessDetails422NotFound(nino: String): Unit = {
     val ifBusinessDetailsResponse = Json.toJson(incomeSourceDetailsNotFoundError).toString
     WiremockHelper.stubGet(viewAndChangeUrl(nino), Status.NOT_FOUND, ifBusinessDetailsResponse)
@@ -46,4 +59,12 @@ object ViewAndChangeStub {
     WiremockHelper.stubGet(viewAndChangeUrl(mtdRef), Status.INTERNAL_SERVER_ERROR, errorResponse.toString)
   }
 
+  def stubUpdateIncomeSourceError(status: Int, responseBody: String): Unit = {
+    WiremockHelper.stubPut(
+      url = url,
+      status = status,
+      responseBody = responseBody
+    )
+  }
 }
+

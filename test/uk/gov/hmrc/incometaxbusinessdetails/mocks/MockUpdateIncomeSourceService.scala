@@ -16,26 +16,27 @@
 
 package uk.gov.hmrc.incometaxbusinessdetails.mocks
 
-import uk.gov.hmrc.incometaxbusinessdetails.models.updateIncomeSource.UpdateIncomeSourceResponse
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.{mock, reset, when}
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
 import org.scalatest.{BeforeAndAfterEach, OptionValues}
-import uk.gov.hmrc.incometaxbusinessdetails.connectors.UpdateIncomeSourceConnector
+import uk.gov.hmrc.incometaxbusinessdetails.models.updateIncomeSource.UpdateIncomeSourceResponse
+import uk.gov.hmrc.incometaxbusinessdetails.services.UpdateIncomeSourceService
 
 import scala.concurrent.Future
 
-trait MockUpdateIncomeSourceConnector extends AnyWordSpecLike with Matchers with OptionValues with BeforeAndAfterEach {
+trait MockUpdateIncomeSourceService extends AnyWordSpecLike with Matchers with OptionValues with BeforeAndAfterEach {
 
-  val mockUpdateIncomeSourceConnector = mock(classOf[UpdateIncomeSourceConnector])
+  val mockUpdateIncomeSourceService: UpdateIncomeSourceService = mock(classOf[UpdateIncomeSourceService])
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    reset(mockUpdateIncomeSourceConnector)
+    reset(mockUpdateIncomeSourceService)
   }
 
   def mockUpdateIncomeSource(response: UpdateIncomeSourceResponse): Unit = {
-    when(mockUpdateIncomeSourceConnector.updateIncomeSource(ArgumentMatchers.any())(ArgumentMatchers.any())) thenReturn Future.successful(response)
+    when(mockUpdateIncomeSourceService.updateIncomeSource(ArgumentMatchers.any())(ArgumentMatchers.any(),ArgumentMatchers.any()))
+    .thenReturn(Future.successful(response))
   }
 }
