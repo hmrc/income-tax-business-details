@@ -18,12 +18,10 @@ package uk.gov.hmrc.incometaxbusinessdetails.helpers.servicemocks
 
 import play.api.http.Status
 import play.api.libs.json.{JsValue, Json}
-import uk.gov.hmrc.incometaxbusinessdetails.constants.HipBusinessDetailsIntegrationTestConstants.{failureResponse, successResponseHip}
 import uk.gov.hmrc.incometaxbusinessdetails.constants.HipIncomeSourceIntegrationTestConstants
-import uk.gov.hmrc.incometaxbusinessdetails.constants.HipIncomeSourceIntegrationTestConstants.{incomeSourceDetailsError, incomeSourceDetailsNotFoundError, ninoLookupError}
+import uk.gov.hmrc.incometaxbusinessdetails.constants.HipIncomeSourceIntegrationTestConstants.{incomeSourceDetailsError, incomeSourceDetailsNotFoundError}
 import uk.gov.hmrc.incometaxbusinessdetails.helpers.WiremockHelper
 import uk.gov.hmrc.incometaxbusinessdetails.models.hip.core.NinoModel
-import uk.gov.hmrc.incometaxbusinessdetails.models.hip.incomeSourceDetails.IncomeSourceDetailsModel
 
 object ViewAndChangeStub {
 
