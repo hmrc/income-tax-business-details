@@ -47,7 +47,11 @@ trait ComponentSpecBase extends TestSuite with CustomMatchers
     "microservice.services.auth.port" -> mockPort,
     "microservice.services.hip.host" -> mockHost,
     "microservice.services.hip.port" -> mockPort,
-    "microservice.services.if.url" -> mockUrl
+    "microservice.services.if.url" -> mockUrl,
+    "microservice.services.des.url" -> mockUrl,
+    "microservice.services.income-tax-view-change.host" -> mockHost,
+    "microservice.services.income-tax-view-change.port" -> mockPort
+    
   )
 
   override implicit lazy val app: Application = new GuiceApplicationBuilder()
