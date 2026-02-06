@@ -139,7 +139,7 @@ class IncomeSourceDetailsControllerISpec extends ComponentSpecBase {
 
           And("I wiremock stub a successful getIncomeSourceDetails response")
           BusinessDetailsHipStub.stubGetBusinessDetailsError(testMtdRef)
-          ViewAndChangeStub.stubGetHipBusinessDetails(testMtdRef, jsonSuccessOutput())
+          ViewAndChangeStub.stubGetIncomeSourceDetails(testMtdRef, jsonSuccessOutput())
 
           When(s"I call GET income-tax-view-change/income-sources/$testMtdRef")
           val res = IncomeTaxViewChange.getIncomeSources(testMtdRef)
@@ -162,7 +162,7 @@ class IncomeSourceDetailsControllerISpec extends ComponentSpecBase {
 
           And("I wiremock stub an error response")
           BusinessDetailsHipStub.stubGetHipBusinessDetails422NotFound(testMtdRef)
-          ViewAndChangeStub.stubGetHipBusinessDetails422NotFound(testMtdRef)
+          ViewAndChangeStub.stubGetBusinessDetails422NotFound(testMtdRef)
 
           When(s"I call GET income-tax-view-change/income-sources/$testMtdRef")
           val res = IncomeTaxViewChange.getIncomeSources(testMtdRef)

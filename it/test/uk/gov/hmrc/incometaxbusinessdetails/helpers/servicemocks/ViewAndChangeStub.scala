@@ -34,30 +34,18 @@ object ViewAndChangeStub {
     WiremockHelper.stubGet(viewAndChangeUrl(mtdRef), Status.OK, expectedResponse)
   }
 
-  def stubGetHipBusinessDetails(nino: String, response: JsValue): Unit = {
+  def stubGetIncomeSourceDetails(nino: String, response: JsValue): Unit = {
     WiremockHelper.stubGet(viewAndChangeUrl(nino), Status.OK, response.toString)
   }
 
-  def stubGetHipBusinessDetails422NotFound(nino: String): Unit = {
+  def stubGetBusinessDetails422NotFound(nino: String): Unit = {
     val ifBusinessDetailsResponse = Json.toJson(incomeSourceDetailsNotFoundError).toString
     WiremockHelper.stubGet(viewAndChangeUrl(nino), Status.NOT_FOUND, ifBusinessDetailsResponse)
-  }
-
-  def stubGetHipBusinessDetails422GenericError(nino: String): Unit = {
-    WiremockHelper.stubGet(viewAndChangeUrl(nino), Status.UNPROCESSABLE_ENTITY, HipIncomeSourceIntegrationTestConstants.errorJson422GeneralError.toString)
   }
 
   def stubGetBusinessDetailsError(mtdRef: String): Unit = {
     val errorResponse = Json.toJson(incomeSourceDetailsError)
     WiremockHelper.stubGet(viewAndChangeUrl(mtdRef), Status.INTERNAL_SERVER_ERROR, errorResponse.toString)
   }
-
-  def stubGetBusinessDetailsNinoError(mtdRef: String): Unit = {
-    val errorResponse = Json.toJson(ninoLookupError)
-    WiremockHelper.stubGet(viewAndChangeUrl(mtdRef), Status.INTERNAL_SERVER_ERROR, errorResponse.toString)
-  }
-
-  def verifyGetHipBusinessDetails(mtdRef: String): Unit =
-    WiremockHelper.verifyGet(viewAndChangeUrl(mtdRef))
 
 }

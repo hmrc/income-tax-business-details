@@ -18,41 +18,31 @@ package uk.gov.hmrc.incometaxbusinessdetails.helpers.servicemocks
 
 import play.api.http.Status
 import play.api.libs.json.{JsValue, Json}
-import uk.gov.hmrc.incometaxbusinessdetails.constants.HipBusinessDetailsIntegrationTestConstants.{failureResponse, successResponse, successResponseHip}
 import uk.gov.hmrc.incometaxbusinessdetails.constants.HipIncomeSourceIntegrationTestConstants.{incomeSourceDetailsError, incomeSourceDetailsNotFoundError}
-import uk.gov.hmrc.incometaxbusinessdetails.constants.{HipBusinessDetailsIntegrationTestConstants, HipIncomeSourceIntegrationTestConstants}
+import uk.gov.hmrc.incometaxbusinessdetails.constants.HipIncomeSourceIntegrationTestConstants
 import uk.gov.hmrc.incometaxbusinessdetails.helpers.WiremockHelper
-import uk.gov.hmrc.incometaxbusinessdetails.models.hip.incomeSourceDetails.IncomeSourceDetailsModel
 
 object ViewAndChangeWithNinoStub {
 
-  val url: (String) => String = (nino) => s"""/income-tax-view-change/get-business-details/nino/$nino"""
+  val viewAndChangeUrl: (String) => String = (nino) => s"""/income-tax-view-change/get-business-details/nino/$nino"""
 
-  def stubGetHipBusinessDetails(nino: String, response: JsValue): Unit = {
-      WiremockHelper.stubGet(url(nino), Status.OK, response.toString)
+  def stubGetBusinessDetails(nino: String, response: JsValue): Unit = {
+      WiremockHelper.stubGet(viewAndChangeUrl(nino), Status.OK, response.toString)
   }
 
 
-  def stubGetHipBusinessDetailsNotFound(nino: String): Unit = {
+  def stubGetBusinessDetailsNotFound(nino: String): Unit = {
     val ifBusinessDetailsResponse = Json.toJson(incomeSourceDetailsNotFoundError).toString
-    WiremockHelper.stubGet(url(nino), Status.NOT_FOUND, ifBusinessDetailsResponse)
+    WiremockHelper.stubGet(viewAndChangeUrl(nino), Status.NOT_FOUND, ifBusinessDetailsResponse)
   }
 
-  def stubGetHipBusinessDetailsError(nino: String): Unit = {
+  def stubGetBusinessDetailsError(nino: String): Unit = {
     val errorResponse = Json.toJson(incomeSourceDetailsError)
-    WiremockHelper.stubGet(url(nino), Status.INTERNAL_SERVER_ERROR, errorResponse.toString)
+    WiremockHelper.stubGet(viewAndChangeUrl(nino), Status.INTERNAL_SERVER_ERROR, errorResponse.toString)
   }
 
-  def stubGetHipBusinessDetails422NotFound(nino: String): Unit = {
-    WiremockHelper.stubGet(url(nino), Status.UNPROCESSABLE_ENTITY, "{}")
+  def stubGetBusinessDetails422GenericError(nino: String): Unit = {
+    WiremockHelper.stubGet(viewAndChangeUrl(nino), Status.UNPROCESSABLE_ENTITY, "{}")
   }
-
-  def stubGetHipBusinessDetails422GenericError(nino: String): Unit = {
-    WiremockHelper.stubGet(url(nino), Status.UNPROCESSABLE_ENTITY, "{}")
-  }
-
-  def verifyGetHipBusinessDetails(nino: String): Unit = {
-    WiremockHelper.verifyGet(url(nino))
-  }
-
+  
 }

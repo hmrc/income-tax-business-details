@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.incometaxbusinessdetails.controllers
 
-import uk.gov.hmrc.incometaxbusinessdetails.models.hip.incomeSourceDetails.{IncomeSourceDetailsError, IncomeSourceDetailsModel}
+import uk.gov.hmrc.incometaxbusinessdetails.models.hip.incomeSourceDetails.IncomeSourceDetailsError
 import play.api.http.Status.*
 import uk.gov.hmrc.incometaxbusinessdetails.constants.BaseIntegrationTestConstants.testNino
 import uk.gov.hmrc.incometaxbusinessdetails.constants.HipBusinessDetailsIntegrationTestConstants.jsonSuccessOutput
@@ -53,7 +53,7 @@ class BusinessDetailsControllerISpec extends ComponentSpecBase {
 
           And("I wiremock stub a failed initial response followed by successful response")
           BusinessDetailsHipCallWithNinoStub.stubGetHipBusinessDetailsError(testNino)
-          ViewAndChangeWithNinoStub.stubGetHipBusinessDetails(testNino, jsonSuccessOutput())
+          ViewAndChangeWithNinoStub.stubGetBusinessDetails(testNino, jsonSuccessOutput())
 
           When(s"I call GET /get-business-details/nino/$testNino")
           val res = IncomeTaxViewChange.getBusinessDetails(testNino)
@@ -71,7 +71,7 @@ class BusinessDetailsControllerISpec extends ComponentSpecBase {
 
           And("I wiremock stub a successful getIncomeSourceDetails response")
           BusinessDetailsHipCallWithNinoStub.stubGetHipBusinessDetailsNotFound(testNino, incomeSourceDetailsSuccess)
-          ViewAndChangeWithNinoStub.stubGetHipBusinessDetailsNotFound(testNino)
+          ViewAndChangeWithNinoStub.stubGetBusinessDetailsNotFound(testNino)
           When(s"I call GET /get-business-details/nino/$testNino")
           val res = IncomeTaxViewChange.getBusinessDetails(testNino)
 
@@ -90,7 +90,7 @@ class BusinessDetailsControllerISpec extends ComponentSpecBase {
 
           And("I wiremock stub a successful getIncomeSourceDetails response")
           BusinessDetailsHipCallWithNinoStub.stubGetHipBusinessDetails422NotFound(testNino)
-          ViewAndChangeWithNinoStub.stubGetHipBusinessDetailsNotFound(testNino)
+          ViewAndChangeWithNinoStub.stubGetBusinessDetailsNotFound(testNino)
           When(s"I call GET /get-business-details/nino/$testNino")
           val res = IncomeTaxViewChange.getBusinessDetails(testNino)
 
@@ -109,7 +109,7 @@ class BusinessDetailsControllerISpec extends ComponentSpecBase {
 
           And("I wiremock stub a successful getIncomeSourceDetails response")
           BusinessDetailsHipCallWithNinoStub.stubGetHipBusinessDetails422GenericError(testNino)
-          ViewAndChangeWithNinoStub.stubGetHipBusinessDetails422GenericError(testNino)
+          ViewAndChangeWithNinoStub.stubGetBusinessDetails422GenericError(testNino)
 
           When(s"I call GET /get-business-details/nino/$testNino")
           val res = IncomeTaxViewChange.getBusinessDetails(testNino)
@@ -129,11 +129,10 @@ class BusinessDetailsControllerISpec extends ComponentSpecBase {
 
           And("I wiremock stub an error response")
           BusinessDetailsHipCallWithNinoStub.stubGetHipBusinessDetailsError(testNino)
-          ViewAndChangeWithNinoStub.stubGetHipBusinessDetailsError(testNino)
+          ViewAndChangeWithNinoStub.stubGetBusinessDetailsError(testNino)
 
           When(s"I call GET /get-business-details/nino/$testNino")
           val res = IncomeTaxViewChange.getBusinessDetails(testNino)
-          println("-------" + res.body + "--------")
 
           BusinessDetailsHipCallWithNinoStub.verifyGetHipBusinessDetails(testNino)
 
