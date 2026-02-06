@@ -19,7 +19,6 @@ package uk.gov.hmrc.incometaxbusinessdetails.controllers
 import uk.gov.hmrc.incometaxbusinessdetails.models.hip.incomeSourceDetails.CreateBusinessDetailsHipErrorResponse
 import play.api.http.Status.*
 import play.api.libs.json.Json
-import play.api.libs.ws.JsonBodyReadables.readableAsJson
 import uk.gov.hmrc.incometaxbusinessdetails.constants.BaseIntegrationTestConstants.testMtdbsa
 import uk.gov.hmrc.incometaxbusinessdetails.constants.CreateBusinessDetailsHipIntegrationTestConstants.{testCreateBusinessDetailsSuccessResponse, testCreateForeignPropertyHipRequest, testCreateForeignPropertyRequest, testCreateForeignPropertyRequestNoFlag, testCreateHipForeignPropertyRequestNoFlag, testCreateSelfEmploymentHipIncomeSourceRequest, testCreateSelfEmploymentIncomeSourceRequest, testCreateUKPropertyHipRequest, testCreateUKPropertyRequest, testIncomeSourceId}
 import uk.gov.hmrc.incometaxbusinessdetails.helpers.ComponentSpecBase

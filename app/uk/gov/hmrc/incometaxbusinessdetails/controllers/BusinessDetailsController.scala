@@ -31,7 +31,6 @@ class BusinessDetailsController @Inject()(val authentication: AuthenticationPred
                                           cc: ControllerComponents
                                             )(implicit ec: ExecutionContext) extends BackendController(cc) with Logging {
 
-
   def getBusinessDetails(nino: String): Action[AnyContent] = authentication.async { implicit request =>
     businessDetailsService.getBusinessDetails(nino)
   }
