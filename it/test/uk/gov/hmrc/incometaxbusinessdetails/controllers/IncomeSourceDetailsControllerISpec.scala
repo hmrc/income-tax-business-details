@@ -23,7 +23,7 @@ import uk.gov.hmrc.incometaxbusinessdetails.constants.BaseIntegrationTestConstan
 import uk.gov.hmrc.incometaxbusinessdetails.constants.HipBusinessDetailsIntegrationTestConstants.jsonSuccessOutput
 import uk.gov.hmrc.incometaxbusinessdetails.constants.HipIncomeSourceIntegrationTestConstants.{incomeSourceDetailsError, incomeSourceDetailsNotFoundError, incomeSourceDetailsSuccess, ninoLookupError}
 import uk.gov.hmrc.incometaxbusinessdetails.helpers.ComponentSpecBase
-import uk.gov.hmrc.incometaxbusinessdetails.helpers.servicemocks.BusinessDetailsHipStub
+import uk.gov.hmrc.incometaxbusinessdetails.helpers.servicemocks.{BusinessDetailsHipStub, ViewAndChangeStub}
 
 
 class IncomeSourceDetailsControllerISpec extends ComponentSpecBase {
@@ -50,6 +50,28 @@ class IncomeSourceDetailsControllerISpec extends ComponentSpecBase {
             jsonBodyAs[NinoModel](NinoModel(testNino))
           )
         }
+
+        "Initial call fails but viewAndChange returns a valid NINO" in {
+
+          isAuthorised(true)
+
+          And("I wiremock stub a successful getIncomeSourceDetails response")
+          BusinessDetailsHipStub.stubGetBusinessDetailsError(testMtdRef)
+          ViewAndChangeStub.stubGetBusinessDetails(testMtdRef, NinoModel(testNino))
+
+          When(s"I call GET income-tax-view-change/nino-lookup/$testMtdRef")
+          val res = IncomeTaxViewChange.getNino(testMtdRef)
+
+          BusinessDetailsHipStub.verifyGetHipBusinessDetails(testMtdRef)
+
+          Then("a successful response is returned with the correct NINO")
+
+          res should have(
+            httpStatus(OK),
+            jsonBodyAs[NinoModel](NinoModel(testNino))
+          )
+        }
+
       }
       "An error response is returned from IF" should {
         "return an Error Response model" in {
@@ -57,6 +79,7 @@ class IncomeSourceDetailsControllerISpec extends ComponentSpecBase {
 
           And("I wiremock stub an error response")
           BusinessDetailsHipStub.stubGetBusinessDetailsError(testMtdRef)
+          ViewAndChangeStub.stubGetBusinessDetailsError(testMtdRef)
 
           When(s"I call GET income-tax-view-change/income-sources/$testMtdRef")
           val res = IncomeTaxViewChange.getNino(testMtdRef)
@@ -109,6 +132,28 @@ class IncomeSourceDetailsControllerISpec extends ComponentSpecBase {
             jsonBodyMatching(jsonSuccessOutput())
           )
         }
+
+        "Initial call fails but viewAndChange returns a valid IncomeSourceDetails model" in {
+
+          isAuthorised(true)
+
+          And("I wiremock stub a successful getIncomeSourceDetails response")
+          BusinessDetailsHipStub.stubGetBusinessDetailsError(testMtdRef)
+          ViewAndChangeStub.stubGetHipBusinessDetails(testMtdRef, jsonSuccessOutput())
+
+          When(s"I call GET income-tax-view-change/income-sources/$testMtdRef")
+          val res = IncomeTaxViewChange.getIncomeSources(testMtdRef)
+
+          BusinessDetailsHipStub.verifyGetHipBusinessDetails(testMtdRef)
+
+          Then("a successful response is returned with the correct NINO")
+
+          res should have(
+            httpStatus(OK),
+            jsonBodyMatching(jsonSuccessOutput())
+          )
+        }
+        
       }
 
       "An 422 response is returned from IF" should {
@@ -117,6 +162,7 @@ class IncomeSourceDetailsControllerISpec extends ComponentSpecBase {
 
           And("I wiremock stub an error response")
           BusinessDetailsHipStub.stubGetHipBusinessDetails422NotFound(testMtdRef)
+          ViewAndChangeStub.stubGetHipBusinessDetails422NotFound(testMtdRef)
 
           When(s"I call GET income-tax-view-change/income-sources/$testMtdRef")
           val res = IncomeTaxViewChange.getIncomeSources(testMtdRef)
@@ -137,6 +183,7 @@ class IncomeSourceDetailsControllerISpec extends ComponentSpecBase {
 
           And("I wiremock stub an error response")
           BusinessDetailsHipStub.stubGetBusinessDetailsError(testMtdRef)
+          ViewAndChangeStub.stubGetBusinessDetailsError(testMtdRef)
 
           When(s"I call GET income-tax-view-change/income-sources/$testMtdRef")
           val res = IncomeTaxViewChange.getIncomeSources(testMtdRef)

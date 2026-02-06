@@ -58,7 +58,7 @@ class ViewAndChangeConnector @Inject()(val http:HttpClientV2,
 
   def getBusinessDetailsByMtdid(mtdRef: String)
                               (implicit headerCarrier: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
-    val url = s"${appConfig.viewAndChangeBaseUrl}/income-tax-view-change//income-sources/$mtdRef"
+    val url = s"${appConfig.viewAndChangeBaseUrl}/income-tax-view-change/income-sources/$mtdRef"
 
     logger.debug(s"Calling GET $url \nHeaders: $headerCarrier \nAuth Headers: $getHeaders")
 
