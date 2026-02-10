@@ -22,18 +22,15 @@ import uk.gov.hmrc.incometaxbusinessdetails.models.updateIncomeSource.{UpdateInc
 import play.api.Logging
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
-import uk.gov.hmrc.incometaxbusinessdetails.connectors.UpdateIncomeSourceConnector
+import uk.gov.hmrc.incometaxbusinessdetails.services.UpdateIncomeSourceService
 import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
-
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class UpdateIncomeSourceController @Inject()(authentication: AuthenticationPredicate,
-                                             cc: ControllerComponents,
-                                             connector: UpdateIncomeSourceConnector)
-                                            (implicit ec: ExecutionContext) extends BackendController(cc) with Logging {
-
-
+class UpdateIncomeSourceController @Inject()(val authentication: AuthenticationPredicate,
+                                             val service: UpdateIncomeSourceService,
+                                             cc: ControllerComponents
+                                            )(implicit ec: ExecutionContext) extends BackendController(cc) with Logging {
   def updateIncomeSource(): Action[AnyContent] =
     authentication.async {
       implicit request =>
@@ -50,7 +47,7 @@ class UpdateIncomeSourceController @Inject()(authentication: AuthenticationPredi
           case x: UpdateIncomeSourceRequestError =>
             logger.error("Bad Request")
             Future(BadRequest(Json.toJson(x)))
-          case x: UpdateIncomeSourceRequestModel => connector.updateIncomeSource(x).map {
+          case x: UpdateIncomeSourceRequestModel => service.updateIncomeSource(x).map {
             case error: UpdateIncomeSourceResponseError =>
               logger.error(s"Error Response: $error")
               Status(error.status)(Json.toJson(error))
@@ -59,7 +56,5 @@ class UpdateIncomeSourceController @Inject()(authentication: AuthenticationPredi
               Ok(Json.toJson(success))
           }
         }
-
     }
-
 }

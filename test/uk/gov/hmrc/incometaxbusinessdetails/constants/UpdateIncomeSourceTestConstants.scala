@@ -18,7 +18,7 @@ package uk.gov.hmrc.incometaxbusinessdetails.constants
 
 import uk.gov.hmrc.incometaxbusinessdetails.models.updateIncomeSource.request.{Cessation, TaxYearSpecific, UpdateIncomeSourceRequestError, UpdateIncomeSourceRequestModel}
 import uk.gov.hmrc.incometaxbusinessdetails.models.updateIncomeSource.{UpdateIncomeSourceResponseError, UpdateIncomeSourceResponseModel}
-import play.api.libs.json.{JsValue, Json}
+import play.api.libs.json.{JsObject, JsValue, Json}
 import play.mvc.Http.Status
 import uk.gov.hmrc.http.HttpResponse
 import uk.gov.hmrc.incometaxbusinessdetails.constants.BaseTestConstants.*
@@ -52,15 +52,15 @@ object UpdateIncomeSourceTestConstants {
     "cessation" -> Json.obj("cessationIndicator" -> true, "cessationDate" -> cessationDate)
   )
 
-  val badRequest = request.copy(cessation = None)
+  val badRequest: UpdateIncomeSourceRequestModel = request.copy(cessation = None)
   val badRequestError = UpdateIncomeSourceRequestError("Json validation error while parsing request")
 
   val errorBadResponse = UpdateIncomeSourceResponseError(Status.BAD_REQUEST, "Dummy Message")
   val failureResponse = UpdateIncomeSourceResponseError(Status.INTERNAL_SERVER_ERROR, s"Unexpected failed future, error")
   val badJsonResponse = UpdateIncomeSourceResponseError(Status.INTERNAL_SERVER_ERROR, "Json Validation Error. Parsing IF Update Income Source")
   val successResponse = UpdateIncomeSourceResponseModel("2022-01-31T09:26:17Z")
-  val successResponseJson = Json.obj("processingDate" -> "2022-01-31T09:26:17Z")
-  val invalidJsonResponse = Json.obj()
+  val successResponseJson: JsObject = Json.obj("processingDate" -> "2022-01-31T09:26:17Z")
+  val invalidJsonResponse: JsObject = Json.obj()
 
   val successHttpResponse = HttpResponse(Status.OK, Json.toJson(successResponse), Map.empty)
   val successInvalidJsonResponse = HttpResponse(Status.OK, Json.toJson(""), Map.empty)
