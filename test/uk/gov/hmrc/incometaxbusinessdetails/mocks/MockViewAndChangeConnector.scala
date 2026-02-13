@@ -17,16 +17,20 @@
 package uk.gov.hmrc.incometaxbusinessdetails.mocks
 
 import org.mockito.ArgumentMatchers
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{mock, reset, when}
 import org.mockito.stubbing.OngoingStubbing
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
 import org.scalatest.{BeforeAndAfterEach, OptionValues}
+import play.api.http.Status.INTERNAL_SERVER_ERROR
 import play.api.libs.json.Json
 import uk.gov.hmrc.http.HttpResponse
 import uk.gov.hmrc.incometaxbusinessdetails.connectors.hip.ViewAndChangeConnector
 import uk.gov.hmrc.incometaxbusinessdetails.constants.BaseTestConstants.{mtdRef, testNino}
 import uk.gov.hmrc.incometaxbusinessdetails.constants.HipIncomeSourceDetailsTestConstants
+import uk.gov.hmrc.incometaxbusinessdetails.models.hip.incomeSourceDetails.{CreateBusinessDetailsHipErrorResponse, IncomeSource}
+import uk.gov.hmrc.incometaxbusinessdetails.services.CreateBusinessDetailsService
 
 import scala.concurrent.Future
 
@@ -34,10 +38,14 @@ import scala.concurrent.Future
 trait MockViewAndChangeConnector extends AnyWordSpecLike with Matchers with OptionValues with BeforeAndAfterEach {
 
   val mockViewAndChangeConnector: ViewAndChangeConnector = mock(classOf[ViewAndChangeConnector])
+  val mockCreateBusinessDetailsService: CreateBusinessDetailsService = mock(classOf[CreateBusinessDetailsService])
+
+  val testIncomeSourceId: String = "AAIS12345678901"
 
   override def beforeEach(): Unit = {
     super.beforeEach()
     reset(mockViewAndChangeConnector)
+    reset(mockCreateBusinessDetailsService)
   }
   
   def mockGetBusinessDetailsByNinoResult(): OngoingStubbing[Future[HttpResponse]] =
@@ -47,4 +55,28 @@ trait MockViewAndChangeConnector extends AnyWordSpecLike with Matchers with Opti
   def mockGetBusinessDetailsByMtdidResult(): OngoingStubbing[Future[HttpResponse]] =
     when(mockViewAndChangeConnector.getBusinessDetailsByMtdid(ArgumentMatchers.eq(mtdRef))(ArgumentMatchers.any(), ArgumentMatchers.any()))
       .thenReturn(Future.successful(HttpResponse(200, Json.toJson(HipIncomeSourceDetailsTestConstants.testIncomeSourceDetailsModel), Map.empty)))
+    
+  def mockCreateIncomeSourceSuccessResponse(): OngoingStubbing[Future[Either[CreateBusinessDetailsHipErrorResponse, List[IncomeSource]]]] =
+    when(mockCreateBusinessDetailsService.createBusinessDetails(any())(any()))
+      .thenReturn(
+        Future.successful(
+          Right(
+            List(
+              IncomeSource(testIncomeSourceId)
+            )
+          )
+        )
+      )
+
+
+  def mockCreateBusinessDetailsErrorResponse(): OngoingStubbing[Future[Either[CreateBusinessDetailsHipErrorResponse, List[IncomeSource]]]] =
+    when(mockCreateBusinessDetailsService.createBusinessDetails(any())(any()))
+      .thenReturn(
+        Future.successful(
+          Left(
+            CreateBusinessDetailsHipErrorResponse(INTERNAL_SERVER_ERROR, "failed to create income source")
+          )
+        )
+      )
+      
 }

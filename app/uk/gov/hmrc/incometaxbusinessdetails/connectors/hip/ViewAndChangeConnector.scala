@@ -16,20 +16,28 @@
 
 package uk.gov.hmrc.incometaxbusinessdetails.connectors.hip
 
-import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, StringContextOps}
+import uk.gov.hmrc.http.{Authorization, HeaderCarrier, HttpResponse, StringContextOps}
 import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.incometaxbusinessdetails.config.AppConfig
+import play.api.libs.json.Json
+import play.api.Logger
+import play.api.http.Status
+import play.api.http.Status.*
+import play.api.libs.ws.writeableOf_JsValue
 import uk.gov.hmrc.incometaxbusinessdetails.connectors.RawResponseReads
-import uk.gov.hmrc.incometaxbusinessdetails.models.hip.GetBusinessDetailsHipApi
-import uk.gov.hmrc.incometaxbusinessdetails.models.hip.incomeSourceDetails.{BusinessDetailsAccessType,MtdId, Nino}
+import uk.gov.hmrc.incometaxbusinessdetails.models.hip.{CreateIncomeSourceHipApi, GetBusinessDetailsHipApi}
+import uk.gov.hmrc.incometaxbusinessdetails.models.hip.incomeSourceDetails.{BusinessDetailsAccessType, MtdId, Nino}
+import uk.gov.hmrc.incometaxbusinessdetails.models.hip.createIncomeSource.CreateIncomeSourceHipRequest
+import uk.gov.hmrc.incometaxbusinessdetails.models.hip.incomeSourceDetails.{CreateBusinessDetailsHipErrorResponse, CreateBusinessDetailsHipModel, IncomeSource}
 
-import javax.inject.{Inject,Singleton}
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 
 @Singleton
 class ViewAndChangeConnector @Inject()(val http:HttpClientV2,
-                                       val appConfig: AppConfig) extends RawResponseReads with HipConnectorDataHelper {
+                                       val appConfig: AppConfig)
+                                      (implicit ec: ExecutionContext) extends RawResponseReads with HipConnectorDataHelper {
 
   def getBusinessDetailsUrl(accessType: BusinessDetailsAccessType, ninoOrMtdRef: String): String = {
     accessType match {
@@ -39,7 +47,6 @@ class ViewAndChangeConnector @Inject()(val http:HttpClientV2,
   }
 
   def getHeaders: Seq[(String, String)] = appConfig.getHIPHeaders(GetBusinessDetailsHipApi, Some(xMessageTypeFor5266))
-
 
   def getBusinessDetailsByNino(nino: String)
                         (implicit headerCarrier: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
@@ -69,4 +76,46 @@ class ViewAndChangeConnector @Inject()(val http:HttpClientV2,
       )
       .execute[HttpResponse]
   }
+
+  val getUrl: String = s"${appConfig.viewAndChangeBaseUrl}/income-tax-view-change/create-income-source/business"
+
+  def createBusinessDetailsGetHeaders: Seq[(String, String)] = appConfig.getHIPHeaders(CreateIncomeSourceHipApi, Some(xMessageTypeFor5265))
+
+  def create(body: CreateIncomeSourceHipRequest)
+            (implicit headerCarrier: HeaderCarrier): Future[Either[CreateBusinessDetailsHipErrorResponse, List[IncomeSource]]] = {
+
+    val hc: HeaderCarrier = headerCarrier
+      .copy(authorization = Some(Authorization(appConfig.desToken)))
+      .withExtraHeaders("Environment" -> appConfig.desEnvironment)
+
+    logWithDebug(s"Calling POST $getUrl \n\nHeaders: $headerCarrier \nAuth Headers: $createBusinessDetailsGetHeaders")
+
+    http.post(url"$getUrl")(hc)
+      .setHeader(createBusinessDetailsGetHeaders: _*)
+      .withBody(Json.toJson[CreateIncomeSourceHipRequest](body))
+      .execute[HttpResponse]
+      .map {
+        case response if response.status == CREATED =>
+          logWithInfo(s"SUCCESS - ${response.json}")
+          response.json.validate[CreateBusinessDetailsHipModel].fold(
+            invalidJson => {
+              logWithError(s"Invalid Json with $invalidJson")
+              Left(response.json.as[CreateBusinessDetailsHipErrorResponse])
+            },
+            (res: CreateBusinessDetailsHipModel) => Right(res.success.incomeSourceIdDetails)
+          )
+        case errorResponse =>
+          logWithError(s"Error with response code: ${errorResponse.status} and body: ${errorResponse.json}")
+          Left(errorResponse.json.as[CreateBusinessDetailsHipErrorResponse])
+      } recover {
+      case ex =>
+        logWithError(s"[CreateBusinessDetailsHipConnector] Unexpected error: ${ex.getMessage}")
+        Left(CreateBusinessDetailsHipErrorResponse(Status.INTERNAL_SERVER_ERROR, s"${ex.getMessage}"))
+    }
+  }
+
+  private val logWithError: String => Unit = message => Logger("application").error(message)
+  private val logWithDebug: String => Unit = message => Logger("application").debug(message)
+  private val logWithInfo: String => Unit = message => Logger("application").info(message)
+  
 }
