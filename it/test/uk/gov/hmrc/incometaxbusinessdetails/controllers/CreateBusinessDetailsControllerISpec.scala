@@ -82,11 +82,11 @@ class CreateBusinessDetailsControllerISpec extends ComponentSpecBase {
           isAuthorised(true)
 
           HipCreateBusinessDetailsStub
-            .stubPostHipBusinessDetails(OK, testCreateUKPropertyHipRequest, testCreateBusinessDetailsSuccessResponse)
+            .stubPostHipBusinessDetails(CREATED, testCreateUKPropertyHipRequest, testCreateBusinessDetailsSuccessResponse)
 
           When(s"I call POST /income-tax/income-sources/mtdbsa/$testMtdbsa/ITSA/business")
           val res = IncomeTaxViewChange.createBusinessDetails(testCreateUKPropertyRequest)
-
+          println("---------" + res.body + "---------")
           HipCreateBusinessDetailsStub.verifyCreateHipBusinessDetails(testCreateUKPropertyHipRequest)
 
           res should have(httpStatus(OK))
@@ -105,7 +105,7 @@ class CreateBusinessDetailsControllerISpec extends ComponentSpecBase {
               Json.toJson(CreateBusinessDetailsHipErrorResponse(INTERNAL_SERVER_ERROR, "failed to create details")))
 
           ViewAndChangeCreateBusinessDetailsStub
-            .stubPostHipBusinessDetails(OK, testCreateUKPropertyHipRequest, testCreateBusinessDetailsSuccessResponse)
+            .stubPostHipBusinessDetails(CREATED, testCreateUKPropertyHipRequest, testCreateBusinessDetailsSuccessResponse)
 
 
           When(s"I call POST /income-tax/income-sources/mtdbsa/$testMtdbsa/ITSA/business")
@@ -125,7 +125,7 @@ class CreateBusinessDetailsControllerISpec extends ComponentSpecBase {
           isAuthorised(true)
 
           HipCreateBusinessDetailsStub
-            .stubPostHipBusinessDetails(OK, testCreateForeignPropertyHipRequest, testCreateBusinessDetailsSuccessResponse)
+            .stubPostHipBusinessDetails(CREATED, testCreateForeignPropertyHipRequest, testCreateBusinessDetailsSuccessResponse)
 
           When(s"I call POST /income-tax/income-sources/mtdbsa/$testMtdbsa/ITSA/business")
           val res = IncomeTaxViewChange.createBusinessDetails(testCreateForeignPropertyRequest)
@@ -140,7 +140,7 @@ class CreateBusinessDetailsControllerISpec extends ComponentSpecBase {
           isAuthorised(true)
 
           HipCreateBusinessDetailsStub
-            .stubPostHipBusinessDetails(OK, testCreateHipForeignPropertyRequestNoFlag, testCreateBusinessDetailsSuccessResponse)
+            .stubPostHipBusinessDetails(CREATED, testCreateHipForeignPropertyRequestNoFlag, testCreateBusinessDetailsSuccessResponse)
 
           When(s"I call POST /income-tax/income-sources/mtdbsa/$testMtdbsa/ITSA/business")
           val res = IncomeTaxViewChange.createBusinessDetails(testCreateForeignPropertyRequestNoFlag)
@@ -163,7 +163,7 @@ class CreateBusinessDetailsControllerISpec extends ComponentSpecBase {
               Json.toJson(CreateBusinessDetailsHipErrorResponse(INTERNAL_SERVER_ERROR, "failed to create details")))
 
           ViewAndChangeCreateBusinessDetailsStub
-            .stubPostHipBusinessDetails(OK, testCreateForeignPropertyHipRequest, testCreateBusinessDetailsSuccessResponse)
+            .stubPostHipBusinessDetails(CREATED, testCreateForeignPropertyHipRequest, testCreateBusinessDetailsSuccessResponse)
 
           When(s"I call POST /income-tax/income-sources/mtdbsa/$testMtdbsa/ITSA/business")
           val res = IncomeTaxViewChange.createBusinessDetails(testCreateForeignPropertyRequest)
@@ -183,7 +183,7 @@ class CreateBusinessDetailsControllerISpec extends ComponentSpecBase {
               Json.toJson(CreateBusinessDetailsHipErrorResponse(INTERNAL_SERVER_ERROR, "failed to create details")))
 
           ViewAndChangeCreateBusinessDetailsStub
-            .stubPostHipBusinessDetails(OK, testCreateHipForeignPropertyRequestNoFlag, testCreateBusinessDetailsSuccessResponse)
+            .stubPostHipBusinessDetails(CREATED, testCreateHipForeignPropertyRequestNoFlag, testCreateBusinessDetailsSuccessResponse)
 
           When(s"I call POST /income-tax/income-sources/mtdbsa/$testMtdbsa/ITSA/business")
           val res = IncomeTaxViewChange.createBusinessDetails(testCreateForeignPropertyRequestNoFlag)
@@ -224,6 +224,7 @@ class CreateBusinessDetailsControllerISpec extends ComponentSpecBase {
 
           When(s"I call POST /income-tax/income-sources/mtdbsa/$testMtdbsa/ITSA/business")
           val res = IncomeTaxViewChange.createBusinessDetails(testCreateSelfEmploymentIncomeSourceRequest())
+          println("--------" + res.status + res.body + "--------")
 
           res should have(httpStatus(INTERNAL_SERVER_ERROR))
         }
