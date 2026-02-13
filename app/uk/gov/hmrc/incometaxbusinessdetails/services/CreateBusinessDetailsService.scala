@@ -21,15 +21,23 @@ import uk.gov.hmrc.incometaxbusinessdetails.models.hip.createIncomeSource.*
 import uk.gov.hmrc.incometaxbusinessdetails.models.hip.incomeSourceDetails.{CreateBusinessDetailsHipErrorResponse, IncomeSource}
 import play.api.Logging
 import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.incometaxbusinessdetails.connectors.hip.ViewAndChangeConnector
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext.Implicits.global
 
 @Singleton
-class CreateBusinessDetailsService @Inject()(createBusinessDetailsHipConnector: CreateBusinessDetailsHipConnector) extends Logging {
+class CreateBusinessDetailsService @Inject()(createBusinessDetailsHipConnector: CreateBusinessDetailsHipConnector,
+                                             viewAndChangeConnector: ViewAndChangeConnector) extends Logging {
 
   def createBusinessDetails(body: CreateIncomeSourceHipRequest)
                            (implicit headerCarrier: HeaderCarrier): Future[Either[CreateBusinessDetailsHipErrorResponse, List[IncomeSource]]] = {
-      createBusinessDetailsHipConnector.create(body)
+    createBusinessDetailsHipConnector.create(body).flatMap {
+      case Right(success) => Future.successful(Right(success))
+      case _ => viewAndChangeConnector.create(body)
+    }
   }
 }
+  
+
