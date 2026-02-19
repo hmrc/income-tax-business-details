@@ -20,6 +20,9 @@ import connectors.hip.CreateBusinessDetailsHipConnector
 import uk.gov.hmrc.incometaxbusinessdetails.models.hip.createIncomeSource.*
 import uk.gov.hmrc.incometaxbusinessdetails.models.hip.incomeSourceDetails.{CreateBusinessDetailsHipErrorResponse, IncomeSource}
 import play.api.Logging
+import play.api.libs.json.Json
+import play.api.mvc.Result
+import play.api.mvc.Results.{Ok, Status}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.incometaxbusinessdetails.connectors.hip.ViewAndChangeConnector
 
@@ -32,10 +35,13 @@ class CreateBusinessDetailsService @Inject()(createBusinessDetailsHipConnector: 
                                              viewAndChangeConnector: ViewAndChangeConnector) extends Logging {
 
   def createBusinessDetails(body: CreateIncomeSourceHipRequest)
-                           (implicit headerCarrier: HeaderCarrier): Future[Either[CreateBusinessDetailsHipErrorResponse, List[IncomeSource]]] = {
+                           (implicit headerCarrier: HeaderCarrier): Future[Result] = {
     createBusinessDetailsHipConnector.create(body).flatMap {
-      case Right(success) => Future.successful(Right(success))
-      case _ => viewAndChangeConnector.create(body)
+      case Right(success) => Future(
+          Ok {
+          Json.toJson(success)
+        })
+      case _ => viewAndChangeConnector.create(body).map(res => Status(res.status)(res.json))
     }
   }
 }

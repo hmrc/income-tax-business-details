@@ -23,7 +23,10 @@ import org.mockito.stubbing.OngoingStubbing
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
 import org.scalatest.{BeforeAndAfterEach, OptionValues}
-import play.api.http.Status.INTERNAL_SERVER_ERROR
+import play.api.http.Status.{INTERNAL_SERVER_ERROR, OK}
+import play.api.libs.json.Json
+import play.api.mvc.Result
+import play.api.mvc.Results.Status
 import uk.gov.hmrc.incometaxbusinessdetails.services.CreateBusinessDetailsService
 
 import scala.concurrent.Future
@@ -40,25 +43,19 @@ trait MockCreateBusinessDetailsService extends AnyWordSpecLike with Matchers wit
 
   val testIncomeSourceId: String = "AAIS12345678901"
 
-  def mockCreateBusinessDetailsErrorResponse(): OngoingStubbing[Future[Either[CreateBusinessDetailsHipErrorResponse, List[IncomeSource]]]] =
+  def mockCreateBusinessDetailsErrorResponse(): OngoingStubbing[Future[Result]] =
     when(mockCreateBusinessDetailsService.createBusinessDetails(any())(any()))
       .thenReturn(
         Future.successful(
-          Left(
-            CreateBusinessDetailsHipErrorResponse(INTERNAL_SERVER_ERROR, "failed to create income source")
-          )
+          (Status(INTERNAL_SERVER_ERROR)(Json.toJson(CreateBusinessDetailsHipErrorResponse(INTERNAL_SERVER_ERROR, "failed to create income source"))))
         )
       )
 
-  def mockCreateIncomeSourceSuccessResponse(): OngoingStubbing[Future[Either[CreateBusinessDetailsHipErrorResponse, List[IncomeSource]]]] =
+  def mockCreateIncomeSourceSuccessResponse(): OngoingStubbing[Future[Result]] =
     when(mockCreateBusinessDetailsService.createBusinessDetails(any())(any()))
       .thenReturn(
         Future.successful(
-          Right(
-            List(
-              IncomeSource(testIncomeSourceId)
-            )
-          )
+          (Status(OK)(Json.toJson(List(IncomeSource(testIncomeSourceId)))))
         )
       )
 }
