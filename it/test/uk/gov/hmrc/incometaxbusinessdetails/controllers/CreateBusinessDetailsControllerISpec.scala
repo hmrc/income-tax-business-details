@@ -62,7 +62,7 @@ class CreateBusinessDetailsControllerISpec extends ComponentSpecBase {
             Json.toJson(CreateBusinessDetailsHipErrorResponse(INTERNAL_SERVER_ERROR, "failed to create details"))
           )
           ViewAndChangeCreateBusinessDetailsStub
-            .stubPostHipBusinessDetails(CREATED, testCreateSelfEmploymentHipIncomeSourceRequest(),
+            .stubPostHipBusinessDetails(OK, testCreateSelfEmploymentHipIncomeSourceRequest(),
               testCreateBusinessDetailsSuccessResponse)
 
           When(s"I call POST /income-tax/income-sources/mtdbsa/$testMtdbsa/ITSA/business")
@@ -82,7 +82,7 @@ class CreateBusinessDetailsControllerISpec extends ComponentSpecBase {
           isAuthorised(true)
 
           HipCreateBusinessDetailsStub
-            .stubPostHipBusinessDetails(OK, testCreateUKPropertyHipRequest, testCreateBusinessDetailsSuccessResponse)
+            .stubPostHipBusinessDetails(CREATED, testCreateUKPropertyHipRequest, testCreateBusinessDetailsSuccessResponse)
 
           When(s"I call POST /income-tax/income-sources/mtdbsa/$testMtdbsa/ITSA/business")
           val res = IncomeTaxViewChange.createBusinessDetails(testCreateUKPropertyRequest)
@@ -125,7 +125,7 @@ class CreateBusinessDetailsControllerISpec extends ComponentSpecBase {
           isAuthorised(true)
 
           HipCreateBusinessDetailsStub
-            .stubPostHipBusinessDetails(OK, testCreateForeignPropertyHipRequest, testCreateBusinessDetailsSuccessResponse)
+            .stubPostHipBusinessDetails(CREATED, testCreateForeignPropertyHipRequest, testCreateBusinessDetailsSuccessResponse)
 
           When(s"I call POST /income-tax/income-sources/mtdbsa/$testMtdbsa/ITSA/business")
           val res = IncomeTaxViewChange.createBusinessDetails(testCreateForeignPropertyRequest)
@@ -140,7 +140,7 @@ class CreateBusinessDetailsControllerISpec extends ComponentSpecBase {
           isAuthorised(true)
 
           HipCreateBusinessDetailsStub
-            .stubPostHipBusinessDetails(OK, testCreateHipForeignPropertyRequestNoFlag, testCreateBusinessDetailsSuccessResponse)
+            .stubPostHipBusinessDetails(CREATED, testCreateHipForeignPropertyRequestNoFlag, testCreateBusinessDetailsSuccessResponse)
 
           When(s"I call POST /income-tax/income-sources/mtdbsa/$testMtdbsa/ITSA/business")
           val res = IncomeTaxViewChange.createBusinessDetails(testCreateForeignPropertyRequestNoFlag)

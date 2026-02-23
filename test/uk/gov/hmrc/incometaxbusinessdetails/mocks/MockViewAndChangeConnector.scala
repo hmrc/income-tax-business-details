@@ -51,5 +51,3 @@ trait MockViewAndChangeConnector extends AnyWordSpecLike with Matchers with Opti
     when(mockViewAndChangeConnector.getBusinessDetailsByMtdid(ArgumentMatchers.eq(mtdRef))(ArgumentMatchers.any(), ArgumentMatchers.any()))
       .thenReturn(Future.successful(HttpResponse(200, Json.toJson(HipIncomeSourceDetailsTestConstants.testIncomeSourceDetailsModel), Map.empty)))
 }
-
-//The above is called by Business/Income details service unit tests. So I probably need something for the CreateBusinessDetailsConnector to be called by the respective Service tests  
