@@ -88,9 +88,4 @@ class ViewAndChangeConnector @Inject()(val http:HttpClientV2,
       )
       .execute[HttpResponse]
   }
-
-//  private val logWithError: String => Unit = message => Logger("application").error(message)
-//  private val logWithDebug: String => Unit = message => Logger("application").debug(message)
-//  private val logWithInfo: String => Unit = message => Logger("application").info(message)
-  
 }
