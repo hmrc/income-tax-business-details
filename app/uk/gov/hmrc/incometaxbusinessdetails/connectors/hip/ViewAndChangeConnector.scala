@@ -19,17 +19,21 @@ package uk.gov.hmrc.incometaxbusinessdetails.connectors.hip
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, StringContextOps}
 import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.incometaxbusinessdetails.config.AppConfig
+import play.api.libs.json.Json
+import play.api.libs.ws.writeableOf_JsValue
 import uk.gov.hmrc.incometaxbusinessdetails.connectors.RawResponseReads
-import uk.gov.hmrc.incometaxbusinessdetails.models.hip.GetBusinessDetailsHipApi
-import uk.gov.hmrc.incometaxbusinessdetails.models.hip.incomeSourceDetails.{BusinessDetailsAccessType,MtdId, Nino}
+import uk.gov.hmrc.incometaxbusinessdetails.models.hip.{CreateIncomeSourceHipApi, GetBusinessDetailsHipApi}
+import uk.gov.hmrc.incometaxbusinessdetails.models.hip.incomeSourceDetails.{BusinessDetailsAccessType, MtdId, Nino}
+import uk.gov.hmrc.incometaxbusinessdetails.models.hip.createIncomeSource.CreateIncomeSourceHipRequest
 
-import javax.inject.{Inject,Singleton}
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 
 @Singleton
 class ViewAndChangeConnector @Inject()(val http:HttpClientV2,
-                                       val appConfig: AppConfig) extends RawResponseReads with HipConnectorDataHelper {
+                                       val appConfig: AppConfig)
+                                      (implicit ec: ExecutionContext) extends RawResponseReads with HipConnectorDataHelper {
 
   def getBusinessDetailsUrl(accessType: BusinessDetailsAccessType, ninoOrMtdRef: String): String = {
     accessType match {
@@ -39,7 +43,6 @@ class ViewAndChangeConnector @Inject()(val http:HttpClientV2,
   }
 
   def getHeaders: Seq[(String, String)] = appConfig.getHIPHeaders(GetBusinessDetailsHipApi, Some(xMessageTypeFor5266))
-
 
   def getBusinessDetailsByNino(nino: String)
                         (implicit headerCarrier: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
@@ -66,6 +69,22 @@ class ViewAndChangeConnector @Inject()(val http:HttpClientV2,
       .get(url"$url")
       .setHeader(
         getHeaders: _*
+      )
+      .execute[HttpResponse]
+  }
+
+  val getUrl: String = s"${appConfig.viewAndChangeBaseUrl}/income-tax-view-change/create-income-source/business"
+
+  private def createBusinessDetailsGetHeaders: Seq[(String, String)] = appConfig.getHIPHeaders(CreateIncomeSourceHipApi, Some(xMessageTypeFor5265))
+
+  def create(body: CreateIncomeSourceHipRequest)
+            (implicit headerCarrier: HeaderCarrier): Future[HttpResponse] = {
+    
+
+    http.post(url"$getUrl")
+      .withBody(Json.toJson[CreateIncomeSourceHipRequest](body))
+      .setHeader(
+        createBusinessDetailsGetHeaders: _*
       )
       .execute[HttpResponse]
   }

@@ -27,6 +27,7 @@ import uk.gov.hmrc.http.HttpResponse
 import uk.gov.hmrc.incometaxbusinessdetails.connectors.hip.ViewAndChangeConnector
 import uk.gov.hmrc.incometaxbusinessdetails.constants.BaseTestConstants.{mtdRef, testNino}
 import uk.gov.hmrc.incometaxbusinessdetails.constants.HipIncomeSourceDetailsTestConstants
+import uk.gov.hmrc.incometaxbusinessdetails.services.CreateBusinessDetailsService
 
 import scala.concurrent.Future
 
@@ -34,10 +35,12 @@ import scala.concurrent.Future
 trait MockViewAndChangeConnector extends AnyWordSpecLike with Matchers with OptionValues with BeforeAndAfterEach {
 
   val mockViewAndChangeConnector: ViewAndChangeConnector = mock(classOf[ViewAndChangeConnector])
-
+  val mockCreateBusinessDetailsService: CreateBusinessDetailsService = mock(classOf[CreateBusinessDetailsService])
+  
   override def beforeEach(): Unit = {
     super.beforeEach()
     reset(mockViewAndChangeConnector)
+    reset(mockCreateBusinessDetailsService)
   }
   
   def mockGetBusinessDetailsByNinoResult(): OngoingStubbing[Future[HttpResponse]] =

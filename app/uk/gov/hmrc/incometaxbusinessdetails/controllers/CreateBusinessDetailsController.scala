@@ -47,15 +47,7 @@ class CreateBusinessDetailsController @Inject()(val authentication: Authenticati
           }
         case JsSuccess(validRequest, _) =>
           logWithInfo(s"creating business from body: $validRequest")
-          createBusinessDetailsService.createBusinessDetails(validRequest) map {
-            case Right(successResponse) =>
-              Ok {
-                Json.toJson(successResponse)
-              }
-            case Left(errorResponse) =>
-              logWithError(s"Error Response: $errorResponse")
-              Status(errorResponse.status)(Json.toJson(errorResponse))
-          }
+          createBusinessDetailsService.createBusinessDetails(validRequest)
       }
   }
 

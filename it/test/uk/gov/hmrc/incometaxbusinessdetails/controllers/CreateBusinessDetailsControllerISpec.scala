@@ -26,7 +26,7 @@ import uk.gov.hmrc.incometaxbusinessdetails.constants.CreateBusinessDetailsHipIn
   testCreateSelfEmploymentHipIncomeSourceRequest, testCreateSelfEmploymentIncomeSourceRequest,
   testCreateUKPropertyHipRequest, testCreateUKPropertyRequest, testIncomeSourceId}
 import uk.gov.hmrc.incometaxbusinessdetails.helpers.ComponentSpecBase
-import uk.gov.hmrc.incometaxbusinessdetails.helpers.servicemocks.HipCreateBusinessDetailsStub
+import uk.gov.hmrc.incometaxbusinessdetails.helpers.servicemocks.{HipCreateBusinessDetailsStub, ViewAndChangeCreateBusinessDetailsStub}
 
 
 class CreateBusinessDetailsControllerISpec extends ComponentSpecBase {
@@ -51,6 +51,29 @@ class CreateBusinessDetailsControllerISpec extends ComponentSpecBase {
           res.body.toString should include(testIncomeSourceId)
         }
       }
+
+      "Initial unsuccessful response followed by successful ViewAndChange Response" should {
+        s"return $OK response with an incomeSourceId" in {
+          isAuthorised(true)
+
+          HipCreateBusinessDetailsStub.stubPostHipBusinessDetails(
+            INTERNAL_SERVER_ERROR,
+            testCreateSelfEmploymentHipIncomeSourceRequest(),
+            Json.toJson(CreateBusinessDetailsHipErrorResponse(INTERNAL_SERVER_ERROR, "failed to create details"))
+          )
+          ViewAndChangeCreateBusinessDetailsStub
+            .stubPostHipBusinessDetails(OK, testCreateSelfEmploymentHipIncomeSourceRequest(),
+              testCreateBusinessDetailsSuccessResponse)
+
+          When(s"I call POST /income-tax/income-sources/mtdbsa/$testMtdbsa/ITSA/business")
+          val res = IncomeTaxViewChange.createBusinessDetails(testCreateSelfEmploymentIncomeSourceRequest())
+
+          ViewAndChangeCreateBusinessDetailsStub.verifyCreateHipBusinessDetails(testCreateSelfEmploymentHipIncomeSourceRequest())
+
+          res should have(httpStatus(OK))
+          res.body.toString should include(testIncomeSourceId)
+        }
+      }
     }
     "authorised with a CreateUKPropertyIncomeSourceRequest model" when {
       "A successful response is returned from the API" should {
@@ -59,12 +82,36 @@ class CreateBusinessDetailsControllerISpec extends ComponentSpecBase {
           isAuthorised(true)
 
           HipCreateBusinessDetailsStub
-            .stubPostHipBusinessDetails(OK, testCreateUKPropertyHipRequest, testCreateBusinessDetailsSuccessResponse)
+            .stubPostHipBusinessDetails(CREATED, testCreateUKPropertyHipRequest, testCreateBusinessDetailsSuccessResponse)
 
           When(s"I call POST /income-tax/income-sources/mtdbsa/$testMtdbsa/ITSA/business")
           val res = IncomeTaxViewChange.createBusinessDetails(testCreateUKPropertyRequest)
 
           HipCreateBusinessDetailsStub.verifyCreateHipBusinessDetails(testCreateUKPropertyHipRequest)
+
+          res should have(httpStatus(OK))
+          res.body.toString should include(testIncomeSourceId)
+        }
+      }
+
+      "Initial unsuccessful response followed by successful ViewAndChange Response" should {
+        s"return $OK response with an incomeSourceId" in {
+
+          isAuthorised(true)
+
+          HipCreateBusinessDetailsStub
+            .stubPostHipBusinessDetails(INTERNAL_SERVER_ERROR,
+              testCreateUKPropertyHipRequest,
+              Json.toJson(CreateBusinessDetailsHipErrorResponse(INTERNAL_SERVER_ERROR, "failed to create details")))
+
+          ViewAndChangeCreateBusinessDetailsStub
+            .stubPostHipBusinessDetails(OK, testCreateUKPropertyHipRequest, testCreateBusinessDetailsSuccessResponse)
+
+
+          When(s"I call POST /income-tax/income-sources/mtdbsa/$testMtdbsa/ITSA/business")
+          val res = IncomeTaxViewChange.createBusinessDetails(testCreateUKPropertyRequest)
+
+          ViewAndChangeCreateBusinessDetailsStub.verifyCreateHipBusinessDetails(testCreateUKPropertyHipRequest)
 
           res should have(httpStatus(OK))
           res.body.toString should include(testIncomeSourceId)
@@ -78,7 +125,7 @@ class CreateBusinessDetailsControllerISpec extends ComponentSpecBase {
           isAuthorised(true)
 
           HipCreateBusinessDetailsStub
-            .stubPostHipBusinessDetails(OK, testCreateForeignPropertyHipRequest, testCreateBusinessDetailsSuccessResponse)
+            .stubPostHipBusinessDetails(CREATED, testCreateForeignPropertyHipRequest, testCreateBusinessDetailsSuccessResponse)
 
           When(s"I call POST /income-tax/income-sources/mtdbsa/$testMtdbsa/ITSA/business")
           val res = IncomeTaxViewChange.createBusinessDetails(testCreateForeignPropertyRequest)
@@ -93,12 +140,55 @@ class CreateBusinessDetailsControllerISpec extends ComponentSpecBase {
           isAuthorised(true)
 
           HipCreateBusinessDetailsStub
-            .stubPostHipBusinessDetails(OK, testCreateHipForeignPropertyRequestNoFlag, testCreateBusinessDetailsSuccessResponse)
+            .stubPostHipBusinessDetails(CREATED, testCreateHipForeignPropertyRequestNoFlag, testCreateBusinessDetailsSuccessResponse)
 
           When(s"I call POST /income-tax/income-sources/mtdbsa/$testMtdbsa/ITSA/business")
           val res = IncomeTaxViewChange.createBusinessDetails(testCreateForeignPropertyRequestNoFlag)
 
           HipCreateBusinessDetailsStub.verifyCreateHipBusinessDetails(testCreateHipForeignPropertyRequestNoFlag)
+
+          res should have(httpStatus(OK))
+          res.body.toString should include(testIncomeSourceId)
+        }
+      }
+
+      "Initial unsuccessful response followed by successful ViewAndChange Response" should {
+        s"return $OK with an incomeSourceId" in {
+
+          isAuthorised(true)
+
+          HipCreateBusinessDetailsStub
+            .stubPostHipBusinessDetails(INTERNAL_SERVER_ERROR,
+              testCreateForeignPropertyHipRequest,
+              Json.toJson(CreateBusinessDetailsHipErrorResponse(INTERNAL_SERVER_ERROR, "failed to create details")))
+
+          ViewAndChangeCreateBusinessDetailsStub
+            .stubPostHipBusinessDetails(OK, testCreateForeignPropertyHipRequest, testCreateBusinessDetailsSuccessResponse)
+
+          When(s"I call POST /income-tax/income-sources/mtdbsa/$testMtdbsa/ITSA/business")
+          val res = IncomeTaxViewChange.createBusinessDetails(testCreateForeignPropertyRequest)
+
+          ViewAndChangeCreateBusinessDetailsStub.verifyCreateHipBusinessDetails(testCreateForeignPropertyHipRequest)
+
+          res should have(httpStatus(OK))
+          res.body.toString should include(testIncomeSourceId)
+        }
+
+        s"return $OK with an incomeSourceId with no flag" in {
+          isAuthorised(true)
+
+          HipCreateBusinessDetailsStub
+            .stubPostHipBusinessDetails(INTERNAL_SERVER_ERROR,
+              testCreateHipForeignPropertyRequestNoFlag,
+              Json.toJson(CreateBusinessDetailsHipErrorResponse(INTERNAL_SERVER_ERROR, "failed to create details")))
+
+          ViewAndChangeCreateBusinessDetailsStub
+            .stubPostHipBusinessDetails(OK, testCreateHipForeignPropertyRequestNoFlag, testCreateBusinessDetailsSuccessResponse)
+
+          When(s"I call POST /income-tax/income-sources/mtdbsa/$testMtdbsa/ITSA/business")
+          val res = IncomeTaxViewChange.createBusinessDetails(testCreateForeignPropertyRequestNoFlag)
+
+          ViewAndChangeCreateBusinessDetailsStub.verifyCreateHipBusinessDetails(testCreateHipForeignPropertyRequestNoFlag)
 
           res should have(httpStatus(OK))
           res.body.toString should include(testIncomeSourceId)
@@ -127,6 +217,12 @@ class CreateBusinessDetailsControllerISpec extends ComponentSpecBase {
           isAuthorised(true)
 
           HipCreateBusinessDetailsStub.stubPostHipBusinessDetails(
+            INTERNAL_SERVER_ERROR,
+            testCreateSelfEmploymentHipIncomeSourceRequest(),
+            Json.toJson(CreateBusinessDetailsHipErrorResponse(INTERNAL_SERVER_ERROR, "failed to create details"))
+          )
+
+          ViewAndChangeCreateBusinessDetailsStub.stubPostHipBusinessDetails(
             INTERNAL_SERVER_ERROR,
             testCreateSelfEmploymentHipIncomeSourceRequest(),
             Json.toJson(CreateBusinessDetailsHipErrorResponse(INTERNAL_SERVER_ERROR, "failed to create details"))
