@@ -6,3 +6,4 @@ GET        /income-sources/:mtdRef                                   uk.gov.hmrc
 GET        /get-business-details/nino/:nino                          uk.gov.hmrc.incometaxbusinessdetails.controllers.BusinessDetailsController.getBusinessDetails(nino)
 POST       /create-income-source/business                            uk.gov.hmrc.incometaxbusinessdetails.controllers.CreateBusinessDetailsController.createBusinessDetails()
 PUT        /update-income-source                                     uk.gov.hmrc.incometaxbusinessdetails.controllers.UpdateIncomeSourceController.updateIncomeSource()
+PUT        /customer-facts/update/:mtdId                             uk.gov.hmrc.incometaxbusinessdetails.controllers.UpdateCustomerFactController.updateKnownFacts(mtdId: String)

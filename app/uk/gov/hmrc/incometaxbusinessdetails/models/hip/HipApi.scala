@@ -30,3 +30,8 @@ case object CreateIncomeSourceHipApi extends HipApi {
   def apply(): String = name
 }
 
+case object UpdateCustomerFactHipApi extends HipApi {
+  val name = "update-customer-fact"
+  def apply(): String = name
+}
+
