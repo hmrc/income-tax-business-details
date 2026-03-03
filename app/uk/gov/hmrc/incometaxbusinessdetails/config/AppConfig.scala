@@ -18,7 +18,7 @@ package uk.gov.hmrc.incometaxbusinessdetails.config
 
 
 import uk.gov.hmrc.http.HeaderNames
-import uk.gov.hmrc.incometaxbusinessdetails.models.hip.{CreateIncomeSourceHipApi, GetBusinessDetailsHipApi, HipApi}
+import uk.gov.hmrc.incometaxbusinessdetails.models.hip.{CreateIncomeSourceHipApi, GetBusinessDetailsHipApi, HipApi, UpdateCustomerFactHipApi}
 import uk.gov.hmrc.incometaxbusinessdetails.utils.DateUtils
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
@@ -49,7 +49,7 @@ class AppConfig @Inject()(servicesConfig: ServicesConfig) {
   def getHIPHeaders(hipApi: HipApi, messageTypeHeaderValue: Option[String] = None): Seq[(String, String)] = {
     val additionalHeaders: Seq[(String, String)] = {
       hipApi match {
-        case GetBusinessDetailsHipApi =>
+        case GetBusinessDetailsHipApi | UpdateCustomerFactHipApi =>
           Seq(
             ("X-Originating-System", "MDTPITVC"),
             ("X-Receipt-Date", DateUtils.nowAsUtc),
@@ -63,7 +63,6 @@ class AppConfig @Inject()(servicesConfig: ServicesConfig) {
             ("X-Regime", "ITSA"),
             ("X-Transmitting-System", "HIP")
           )
-       
       }
     }
     messageTypeHeaderValue.map(mtv => Seq(("X-Message-Type", mtv))).getOrElse(Seq()) ++ Seq(
