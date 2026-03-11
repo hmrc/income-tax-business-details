@@ -28,7 +28,6 @@ import uk.gov.hmrc.incometaxbusinessdetails.connectors.hip.ViewAndChangeConnecto
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
-import scala.concurrent.ExecutionContext.Implicits.global
 
 @Singleton
 class CreateBusinessDetailsService @Inject()(createBusinessDetailsHipConnector: CreateBusinessDetailsHipConnector,
