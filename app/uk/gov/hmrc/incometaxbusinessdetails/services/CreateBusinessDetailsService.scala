@@ -28,11 +28,11 @@ import uk.gov.hmrc.incometaxbusinessdetails.connectors.hip.ViewAndChangeConnecto
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
-import scala.concurrent.ExecutionContext.Implicits.global
 
 @Singleton
 class CreateBusinessDetailsService @Inject()(createBusinessDetailsHipConnector: CreateBusinessDetailsHipConnector,
-                                             viewAndChangeConnector: ViewAndChangeConnector) extends Logging {
+                                             viewAndChangeConnector: ViewAndChangeConnector)
+                                            (implicit ec: ExecutionContext) extends Logging {
 
   def createBusinessDetails(body: CreateIncomeSourceHipRequest)
                            (implicit headerCarrier: HeaderCarrier): Future[Result] = {
