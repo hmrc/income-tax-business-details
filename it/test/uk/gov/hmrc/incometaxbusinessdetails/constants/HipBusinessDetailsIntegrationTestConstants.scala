@@ -82,8 +82,8 @@ object HipBusinessDetailsIntegrationTestConstants {
   def successResponseHip(nino: String): JsValue = {
     Json.obj(
       "success" -> Json.obj(
-      "taxPayerDisplayResponse" -> successResponse(nino)
-    ))
+        "taxPayerDisplayResponse" -> successResponse(nino)
+      ))
   }
 
   def successResponse(nino: String): JsValue = {
@@ -93,6 +93,7 @@ object HipBusinessDetailsIntegrationTestConstants {
       "nino" -> nino,
       "mtdbsa" -> testMtdRef,
       "mtdId" -> testMtdRef,
+      "channel" -> "1",
       "propertyIncome" -> true,
       "businessData" -> Json.arr(
         Json.obj(
@@ -153,6 +154,7 @@ object HipBusinessDetailsIntegrationTestConstants {
       """{
         |    "nino": "BB123456A",
         |    "mtdbsa": "123456789012345",
+        |    "channel": "Customer-led",
         |    "businesses": [
         |        {
         |            "incomeSourceId": "111111111111111",
@@ -202,5 +204,4 @@ object HipBusinessDetailsIntegrationTestConstants {
         |    ]
         |}""".stripMargin)
   }
-
 }
