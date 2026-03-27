@@ -30,6 +30,7 @@ object HipIncomeSourceDetailsTestConstants {
   val testIncomeSourceDetailsModel = IncomeSourceDetailsModel(
     nino = testNino,
     mtdbsa = testMtdId,
+    channel = "Customer-led",
     yearOfMigration = Some("2019"),
     businesses = List(testBusinessDetailsModel, testMinimumBusinessDetailsModel),
     properties = List(testPropertyDetailsModel)
@@ -37,6 +38,7 @@ object HipIncomeSourceDetailsTestConstants {
 
   val testMinimumIncomeSourceDetailsModel = IncomeSourceDetailsModel(
     nino = testNino,
+    channel = "Customer-led",
     mtdbsa = testMtdId,
     yearOfMigration = None,
     businesses = List(),
