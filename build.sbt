@@ -8,7 +8,7 @@ import uk.gov.hmrc.versioning.SbtGitVersioning.autoImport.majorVersion
 
 val appName = "income-tax-business-details"
 val currentScalaVersion = "3.3.6"
-ThisBuild / majorVersion := 0
+ThisBuild / majorVersion := 1
 
 lazy val plugins: Seq[Plugins] = Seq.empty
 lazy val playSettings: Seq[Setting[_]] = Seq.empty
