@@ -16,19 +16,19 @@
 
 package connectors.hip
 
-import uk.gov.hmrc.incometaxbusinessdetails.config.AppConfig
-import uk.gov.hmrc.incometaxbusinessdetails.models.hip.CreateIncomeSourceHipApi
-import uk.gov.hmrc.incometaxbusinessdetails.models.hip.createIncomeSource.CreateIncomeSourceHipRequest
-import uk.gov.hmrc.incometaxbusinessdetails.models.hip.incomeSourceDetails.{CreateBusinessDetailsHipErrorResponse, CreateBusinessDetailsHipModel, IncomeSource}
 import play.api.Logger
 import play.api.http.Status
 import play.api.http.Status.*
 import play.api.libs.json.Json
-import uk.gov.hmrc.http.client.HttpClientV2
-import uk.gov.hmrc.http.{Authorization, HeaderCarrier, HttpResponse, StringContextOps}
 import play.api.libs.ws.writeableOf_JsValue
 import uk.gov.hmrc.http.HttpReads.Implicits.*
+import uk.gov.hmrc.http.client.HttpClientV2
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, StringContextOps}
+import uk.gov.hmrc.incometaxbusinessdetails.config.AppConfig
 import uk.gov.hmrc.incometaxbusinessdetails.connectors.hip.HipConnectorDataHelper
+import uk.gov.hmrc.incometaxbusinessdetails.models.hip.CreateIncomeSourceHipApi
+import uk.gov.hmrc.incometaxbusinessdetails.models.hip.createIncomeSource.CreateIncomeSourceHipRequest
+import uk.gov.hmrc.incometaxbusinessdetails.models.hip.incomeSourceDetails.{CreateBusinessDetailsHipErrorResponse, CreateBusinessDetailsHipModel, IncomeSource}
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -45,13 +45,9 @@ class CreateBusinessDetailsHipConnector @Inject()(val http: HttpClientV2,
   def create(body: CreateIncomeSourceHipRequest)
             (implicit headerCarrier: HeaderCarrier): Future[Either[CreateBusinessDetailsHipErrorResponse, List[IncomeSource]]] = {
 
-    val hc: HeaderCarrier = headerCarrier
-      .copy(authorization = Some(Authorization(appConfig.desToken)))
-      .withExtraHeaders("Environment" -> appConfig.desEnvironment)
-
     logWithDebug(s"Calling POST $getUrl \n\nHeaders: $headerCarrier \nAuth Headers: $getHeaders")
 
-    http.post(url"$getUrl")(hc)
+    http.post(url"$getUrl")
       .setHeader(getHeaders: _*)
       .withBody(Json.toJson[CreateIncomeSourceHipRequest](body))
       .execute[HttpResponse]
