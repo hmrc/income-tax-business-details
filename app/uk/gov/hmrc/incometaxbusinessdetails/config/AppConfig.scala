@@ -30,9 +30,6 @@ class AppConfig @Inject()(servicesConfig: ServicesConfig) {
 
   private def loadConfig(key: String) = servicesConfig.getString(key)
 
-  val desToken: String = s"Bearer ${loadConfig("microservice.services.des.authorization-token")}"
-  val desEnvironment: String = loadConfig("microservice.services.des.environment")
-
   val appName: String = servicesConfig.getString("appName")
   val viewAndChangeBaseUrl: String = servicesConfig.baseUrl("income-tax-view-change")
   lazy val hipUrl: String = servicesConfig.baseUrl("hip")
