@@ -42,7 +42,7 @@ class ViewAndChangeConnector @Inject()(val http: HttpClientV2,
       .map { response =>
         response.status match {
           case OK =>
-            logger.info(s"RESPONSE status: ${response.status}, body: ${response.body}")
+            logger.info(s"RESPONSE status: ${response.status}") // TODO - MIPR-2637: Inform V&C team about no longer logging the response body
             response.json.validate[UpdateIncomeSourceResponseModel](UpdateIncomeSourceResponseModel.format).fold(
               invalid => {
                 logger.error(s"Json validation error: $invalid")
@@ -64,6 +64,3 @@ class ViewAndChangeConnector @Inject()(val http: HttpClientV2,
     }
   }
 }
-
-
-

@@ -53,7 +53,7 @@ class CreateBusinessDetailsHipConnector @Inject()(val http: HttpClientV2,
       .execute[HttpResponse]
       .map {
       case response if response.status == CREATED =>
-        logWithInfo(s"SUCCESS - ${response.json}")
+        // TODO - MIPR-2637: Inform V&C team about no longer logging the response body
         response.json.validate[CreateBusinessDetailsHipModel].fold(
           invalidJson => {
             logWithError(s"Invalid Json with $invalidJson")
@@ -73,5 +73,4 @@ class CreateBusinessDetailsHipConnector @Inject()(val http: HttpClientV2,
 
   private val logWithError: String => Unit = message => Logger("application").error(message)
   private val logWithDebug: String => Unit = message => Logger("application").debug(message)
-  private val logWithInfo:  String => Unit = message => Logger("application").info(message)
 }
