@@ -22,7 +22,7 @@ import uk.gov.hmrc.incometaxbusinessdetails.constants.BaseIntegrationTestConstan
 import uk.gov.hmrc.incometaxbusinessdetails.constants.HipBusinessDetailsIntegrationTestConstants.jsonSuccessOutput
 import uk.gov.hmrc.incometaxbusinessdetails.constants.HipIncomeSourceIntegrationTestConstants.{incomeSourceDetailsError, incomeSourceDetailsSuccess}
 import uk.gov.hmrc.incometaxbusinessdetails.helpers.ComponentSpecBase
-import uk.gov.hmrc.incometaxbusinessdetails.helpers.servicemocks.{BusinessDetailsHipCallWithNinoStub, ViewAndChangeWithNinoStub}
+import uk.gov.hmrc.incometaxbusinessdetails.helpers.servicemocks.BusinessDetailsHipCallWithNinoStub
 
 class BusinessDetailsControllerISpec extends ComponentSpecBase {
 
@@ -48,101 +48,7 @@ class BusinessDetailsControllerISpec extends ComponentSpecBase {
           )
         }
 
-        "Initial call fails but viewAndChange returns successful output" in {
-          isAuthorised(true)
 
-          And("I wiremock stub a failed initial response followed by successful response")
-          BusinessDetailsHipCallWithNinoStub.stubGetHipBusinessDetailsError(testNino)
-          ViewAndChangeWithNinoStub.stubGetBusinessDetails(testNino, jsonSuccessOutput())
-
-          When(s"I call GET /get-business-details/nino/$testNino")
-          val res = IncomeTaxViewChange.getBusinessDetails(testNino)
-
-          BusinessDetailsHipCallWithNinoStub.verifyGetHipBusinessDetails(testNino)
-          res should have(
-            httpStatus(OK),
-            jsonBodyMatching(jsonSuccessOutput())
-          )
-        }
-
-        "return a NOT Found error" in {
-
-          isAuthorised(true)
-
-          And("I wiremock stub a successful getIncomeSourceDetails response")
-          BusinessDetailsHipCallWithNinoStub.stubGetHipBusinessDetailsNotFound(testNino, incomeSourceDetailsSuccess)
-          ViewAndChangeWithNinoStub.stubGetBusinessDetailsNotFound(testNino)
-          When(s"I call GET /get-business-details/nino/$testNino")
-          val res = IncomeTaxViewChange.getBusinessDetails(testNino)
-
-          BusinessDetailsHipCallWithNinoStub.verifyGetHipBusinessDetails(testNino)
-
-          Then("a successful response is returned with the correct business details")
-
-          res should have(
-            httpStatus(NOT_FOUND)
-          )
-        }
-
-        "return a UNPROCESSABLE_ENTITY 422 NOT FOUND error with 006 or 008 codes" in {
-
-          isAuthorised(true)
-
-          And("I wiremock stub a successful getIncomeSourceDetails response")
-          BusinessDetailsHipCallWithNinoStub.stubGetHipBusinessDetails422NotFound(testNino)
-          ViewAndChangeWithNinoStub.stubGetBusinessDetailsNotFound(testNino)
-          When(s"I call GET /get-business-details/nino/$testNino")
-          val res = IncomeTaxViewChange.getBusinessDetails(testNino)
-
-          BusinessDetailsHipCallWithNinoStub.verifyGetHipBusinessDetails(testNino)
-
-          Then("a UNPROCESSABLE_ENTITY response is transformed to NOT_FOUND")
-
-          res should have(
-            httpStatus(NOT_FOUND)
-          )
-        }
-
-        "return a UNPROCESSABLE_ENTITY 422 with 001 code" in {
-
-          isAuthorised(true)
-
-          And("I wiremock stub a successful getIncomeSourceDetails response")
-          BusinessDetailsHipCallWithNinoStub.stubGetHipBusinessDetails422GenericError(testNino)
-          ViewAndChangeWithNinoStub.stubGetBusinessDetails422GenericError(testNino)
-
-          When(s"I call GET /get-business-details/nino/$testNino")
-          val res = IncomeTaxViewChange.getBusinessDetails(testNino)
-
-          BusinessDetailsHipCallWithNinoStub.verifyGetHipBusinessDetails(testNino)
-
-          Then("same error response UNPROCESSABLE_ENTITY is cascaded to frontend")
-
-          res should have(
-            httpStatus(UNPROCESSABLE_ENTITY)
-          )
-        }
-      }
-      "An error response is returned from DES" should {
-        "return an Error Response model" in {
-          isAuthorised(true)
-
-          And("I wiremock stub an error response")
-          BusinessDetailsHipCallWithNinoStub.stubGetHipBusinessDetailsError(testNino)
-          ViewAndChangeWithNinoStub.stubGetBusinessDetailsError(testNino)
-
-          When(s"I call GET /get-business-details/nino/$testNino")
-          val res = IncomeTaxViewChange.getBusinessDetails(testNino)
-
-          BusinessDetailsHipCallWithNinoStub.verifyGetHipBusinessDetails(testNino)
-
-          Then("an error response is returned")
-
-          res should have(
-            httpStatus(INTERNAL_SERVER_ERROR),
-            jsonBodyAs[IncomeSourceDetailsError](incomeSourceDetailsError)
-          )
-        }
       }
     }
     "unauthorised" should {

@@ -25,32 +25,31 @@ import play.api.mvc.*
 import play.api.mvc.Results.Status
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.incometaxbusinessdetails.config.AppConfig
-import uk.gov.hmrc.incometaxbusinessdetails.connectors.hip.{GetBusinessDetailsConnector, ViewAndChangeConnector}
-import uk.gov.hmrc.incometaxbusinessdetails.models.hip.incomeSourceDetails.IncomeSourceDetailsModel
+import uk.gov.hmrc.incometaxbusinessdetails.connectors.hip.GetBusinessDetailsConnector
+import uk.gov.hmrc.incometaxbusinessdetails.models.hip.incomeSourceDetails._
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class IncomeSourceDetailsService @Inject()(val getBusinessDetailsFromHipConnector: GetBusinessDetailsConnector,
-                                           val viewAndChangeConnector: ViewAndChangeConnector,
                                            val appConfig: AppConfig
                                           )
                                           (implicit ec: ExecutionContext) extends Logging {
 
   def getIncomeSourceDetails(mtdRef: String)(implicit headerCarrier: HeaderCarrier): Future[Result] = {
-    getBusinessDetailsFromHipConnector.getBusinessDetails(mtdRef, models.hip.incomeSourceDetails.MtdId).flatMap {
-      case success: models.hip.incomeSourceDetails.IncomeSourceDetailsModel =>
-        Future(Status(OK)(Json.toJson(success)))
-      case _ => viewAndChangeConnector.getBusinessDetailsByMtdid(mtdRef).map(res => Status(res.status)(res.json))
+    getBusinessDetailsFromHipConnector.getBusinessDetails(mtdRef, models.hip.incomeSourceDetails.MtdId).map {
+      case success: IncomeSourceDetailsModel => Status(OK)(Json.toJson(success))
+      case notFound: IncomeSourceDetailsNotFound => Status(notFound.status)(Json.toJson(notFound))
+      case err: IncomeSourceDetailsError => Status(err.status)(Json.toJson(err))
     }
   }
 
   def getNino(mtdRef: String)(implicit headerCarrier: HeaderCarrier): Future[Result] = {
-    getBusinessDetailsFromHipConnector.getBusinessDetails(mtdRef, models.hip.incomeSourceDetails.MtdId).flatMap {
-      case success: models.hip.incomeSourceDetails.IncomeSourceDetailsModel =>
-        Future(Status(OK)(Json.toJson(NinoModel(success.nino))))
-      case _ => viewAndChangeConnector.getBusinessDetailsByMtdid(mtdRef).map(res => Status(res.status)(res.json))
+    getBusinessDetailsFromHipConnector.getBusinessDetails(mtdRef, models.hip.incomeSourceDetails.MtdId).map {
+      case success: IncomeSourceDetailsModel => Status(OK)(Json.toJson(NinoModel(success.nino)))
+      case notFound: IncomeSourceDetailsNotFound => Status(notFound.status)(Json.toJson(notFound))
+      case err: IncomeSourceDetailsError => Status(err.status)(Json.toJson(err))
     }
   }
 }

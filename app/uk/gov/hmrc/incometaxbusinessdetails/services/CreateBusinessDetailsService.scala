@@ -24,26 +24,19 @@ import play.api.libs.json.Json
 import play.api.mvc.Result
 import play.api.mvc.Results.{Ok, Status}
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.incometaxbusinessdetails.connectors.hip.ViewAndChangeConnector
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class CreateBusinessDetailsService @Inject()(createBusinessDetailsHipConnector: CreateBusinessDetailsHipConnector,
-                                             viewAndChangeConnector: ViewAndChangeConnector)
-                                            (implicit ec: ExecutionContext) extends Logging {
+class CreateBusinessDetailsService @Inject()(createBusinessDetailsHipConnector: CreateBusinessDetailsHipConnector)
+                                           (implicit ec: ExecutionContext) extends Logging {
 
   def createBusinessDetails(body: CreateIncomeSourceHipRequest)
                            (implicit headerCarrier: HeaderCarrier): Future[Result] = {
-    createBusinessDetailsHipConnector.create(body).flatMap {
-      case Right(success) => Future(
-          Ok {
-          Json.toJson(success)
-        })
-      case _ => viewAndChangeConnector.create(body).map(res => Status(res.status)(res.json))
+    createBusinessDetailsHipConnector.create(body).map {
+      case Right(success) => Ok(Json.toJson(success))
+      case Left(error: CreateBusinessDetailsHipErrorResponse) => Status(error.status)(Json.toJson(error))
     }
   }
 }
-  
-

@@ -26,7 +26,7 @@ import uk.gov.hmrc.incometaxbusinessdetails.constants.CreateBusinessDetailsHipIn
   testCreateSelfEmploymentHipIncomeSourceRequest, testCreateSelfEmploymentIncomeSourceRequest,
   testCreateUKPropertyHipRequest, testCreateUKPropertyRequest, testIncomeSourceId}
 import uk.gov.hmrc.incometaxbusinessdetails.helpers.ComponentSpecBase
-import uk.gov.hmrc.incometaxbusinessdetails.helpers.servicemocks.{HipCreateBusinessDetailsStub, ViewAndChangeCreateBusinessDetailsStub}
+import uk.gov.hmrc.incometaxbusinessdetails.helpers.servicemocks.HipCreateBusinessDetailsStub
 
 
 class CreateBusinessDetailsControllerISpec extends ComponentSpecBase {
@@ -52,28 +52,6 @@ class CreateBusinessDetailsControllerISpec extends ComponentSpecBase {
         }
       }
 
-      "Initial unsuccessful response followed by successful ViewAndChange Response" should {
-        s"return $OK response with an incomeSourceId" in {
-          isAuthorised(true)
-
-          HipCreateBusinessDetailsStub.stubPostHipBusinessDetails(
-            INTERNAL_SERVER_ERROR,
-            testCreateSelfEmploymentHipIncomeSourceRequest(),
-            Json.toJson(CreateBusinessDetailsHipErrorResponse(INTERNAL_SERVER_ERROR, "failed to create details"))
-          )
-          ViewAndChangeCreateBusinessDetailsStub
-            .stubPostHipBusinessDetails(OK, testCreateSelfEmploymentHipIncomeSourceRequest(),
-              testCreateBusinessDetailsSuccessResponse)
-
-          When(s"I call POST /income-tax/income-sources/mtdbsa/$testMtdbsa/ITSA/business")
-          val res = IncomeTaxViewChange.createBusinessDetails(testCreateSelfEmploymentIncomeSourceRequest())
-
-          ViewAndChangeCreateBusinessDetailsStub.verifyCreateHipBusinessDetails(testCreateSelfEmploymentHipIncomeSourceRequest())
-
-          res should have(httpStatus(OK))
-          res.body.toString should include(testIncomeSourceId)
-        }
-      }
     }
     "authorised with a CreateUKPropertyIncomeSourceRequest model" when {
       "A successful response is returned from the API" should {
@@ -94,29 +72,6 @@ class CreateBusinessDetailsControllerISpec extends ComponentSpecBase {
         }
       }
 
-      "Initial unsuccessful response followed by successful ViewAndChange Response" should {
-        s"return $OK response with an incomeSourceId" in {
-
-          isAuthorised(true)
-
-          HipCreateBusinessDetailsStub
-            .stubPostHipBusinessDetails(INTERNAL_SERVER_ERROR,
-              testCreateUKPropertyHipRequest,
-              Json.toJson(CreateBusinessDetailsHipErrorResponse(INTERNAL_SERVER_ERROR, "failed to create details")))
-
-          ViewAndChangeCreateBusinessDetailsStub
-            .stubPostHipBusinessDetails(OK, testCreateUKPropertyHipRequest, testCreateBusinessDetailsSuccessResponse)
-
-
-          When(s"I call POST /income-tax/income-sources/mtdbsa/$testMtdbsa/ITSA/business")
-          val res = IncomeTaxViewChange.createBusinessDetails(testCreateUKPropertyRequest)
-
-          ViewAndChangeCreateBusinessDetailsStub.verifyCreateHipBusinessDetails(testCreateUKPropertyHipRequest)
-
-          res should have(httpStatus(OK))
-          res.body.toString should include(testIncomeSourceId)
-        }
-      }
     }
     "authorised with a CreateForeignPropertyIncomeSourceRequest model" when {
       "A successful response is returned from the API" should {
@@ -152,48 +107,6 @@ class CreateBusinessDetailsControllerISpec extends ComponentSpecBase {
         }
       }
 
-      "Initial unsuccessful response followed by successful ViewAndChange Response" should {
-        s"return $OK with an incomeSourceId" in {
-
-          isAuthorised(true)
-
-          HipCreateBusinessDetailsStub
-            .stubPostHipBusinessDetails(INTERNAL_SERVER_ERROR,
-              testCreateForeignPropertyHipRequest,
-              Json.toJson(CreateBusinessDetailsHipErrorResponse(INTERNAL_SERVER_ERROR, "failed to create details")))
-
-          ViewAndChangeCreateBusinessDetailsStub
-            .stubPostHipBusinessDetails(OK, testCreateForeignPropertyHipRequest, testCreateBusinessDetailsSuccessResponse)
-
-          When(s"I call POST /income-tax/income-sources/mtdbsa/$testMtdbsa/ITSA/business")
-          val res = IncomeTaxViewChange.createBusinessDetails(testCreateForeignPropertyRequest)
-
-          ViewAndChangeCreateBusinessDetailsStub.verifyCreateHipBusinessDetails(testCreateForeignPropertyHipRequest)
-
-          res should have(httpStatus(OK))
-          res.body.toString should include(testIncomeSourceId)
-        }
-
-        s"return $OK with an incomeSourceId with no flag" in {
-          isAuthorised(true)
-
-          HipCreateBusinessDetailsStub
-            .stubPostHipBusinessDetails(INTERNAL_SERVER_ERROR,
-              testCreateHipForeignPropertyRequestNoFlag,
-              Json.toJson(CreateBusinessDetailsHipErrorResponse(INTERNAL_SERVER_ERROR, "failed to create details")))
-
-          ViewAndChangeCreateBusinessDetailsStub
-            .stubPostHipBusinessDetails(OK, testCreateHipForeignPropertyRequestNoFlag, testCreateBusinessDetailsSuccessResponse)
-
-          When(s"I call POST /income-tax/income-sources/mtdbsa/$testMtdbsa/ITSA/business")
-          val res = IncomeTaxViewChange.createBusinessDetails(testCreateForeignPropertyRequestNoFlag)
-
-          ViewAndChangeCreateBusinessDetailsStub.verifyCreateHipBusinessDetails(testCreateHipForeignPropertyRequestNoFlag)
-
-          res should have(httpStatus(OK))
-          res.body.toString should include(testIncomeSourceId)
-        }
-      }
     }
     "authorised with a invalid request" should {
       s"return $BAD_REQUEST" in {
@@ -216,20 +129,21 @@ class CreateBusinessDetailsControllerISpec extends ComponentSpecBase {
 
           isAuthorised(true)
 
+          And(s"I wiremock stub an $INTERNAL_SERVER_ERROR response from HIP")
           HipCreateBusinessDetailsStub.stubPostHipBusinessDetails(
             INTERNAL_SERVER_ERROR,
-            testCreateSelfEmploymentHipIncomeSourceRequest(),
-            Json.toJson(CreateBusinessDetailsHipErrorResponse(INTERNAL_SERVER_ERROR, "failed to create details"))
-          )
-
-          ViewAndChangeCreateBusinessDetailsStub.stubPostHipBusinessDetails(
-            INTERNAL_SERVER_ERROR,
-            testCreateSelfEmploymentHipIncomeSourceRequest(),
-            Json.toJson(CreateBusinessDetailsHipErrorResponse(INTERNAL_SERVER_ERROR, "failed to create details"))
+            testCreateHipForeignPropertyRequestNoFlag,
+            Json.toJson(CreateBusinessDetailsHipErrorResponse(INTERNAL_SERVER_ERROR, "failed to create income source"))
           )
 
           When(s"I call POST /income-tax/income-sources/mtdbsa/$testMtdbsa/ITSA/business")
-          val res = IncomeTaxViewChange.createBusinessDetails(testCreateSelfEmploymentIncomeSourceRequest())
+          val res = IncomeTaxViewChange.createBusinessDetails(
+            Json.toJson(testCreateHipForeignPropertyRequestNoFlag)
+          )
+
+          Then(s"a status of $INTERNAL_SERVER_ERROR is returned")
+
+          HipCreateBusinessDetailsStub.verifyCreateHipBusinessDetails(testCreateHipForeignPropertyRequestNoFlag)
 
           res should have(httpStatus(INTERNAL_SERVER_ERROR))
         }

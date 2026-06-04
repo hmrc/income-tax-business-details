@@ -18,23 +18,18 @@ package uk.gov.hmrc.incometaxbusinessdetails.services
 
 
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.incometaxbusinessdetails.connectors.{UpdateIncomeSourceConnector, ViewAndChangeConnector}
-import uk.gov.hmrc.incometaxbusinessdetails.models.updateIncomeSource.{UpdateIncomeSourceResponse, UpdateIncomeSourceResponseModel}
+import uk.gov.hmrc.incometaxbusinessdetails.connectors.UpdateIncomeSourceConnector
+import uk.gov.hmrc.incometaxbusinessdetails.models.updateIncomeSource.UpdateIncomeSourceResponse
 import uk.gov.hmrc.incometaxbusinessdetails.models.updateIncomeSource.request.UpdateIncomeSourceRequestModel
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class UpdateIncomeSourceService @Inject()(val updateIncomeSourceConnector:  UpdateIncomeSourceConnector,
-                                          val viewAndChangeConnector: ViewAndChangeConnector){
+class UpdateIncomeSourceService @Inject()(val updateIncomeSourceConnector:  UpdateIncomeSourceConnector){
   def updateIncomeSource(body: UpdateIncomeSourceRequestModel)
                         (implicit headerCarrier: HeaderCarrier,
                                   ec:ExecutionContext): Future[UpdateIncomeSourceResponse] = {
-    updateIncomeSourceConnector.updateIncomeSource(body).flatMap {
-      case success: UpdateIncomeSourceResponseModel => Future.successful(success)
-      case _ => viewAndChangeConnector.updateIncomeSource(body)
-    }
+    updateIncomeSourceConnector.updateIncomeSource(body)
   }
 }
-                                       

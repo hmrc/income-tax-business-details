@@ -21,8 +21,6 @@ import org.mockito.Mockito.{mock, when}
 import play.api.test.Helpers.*
 import uk.gov.hmrc.incometaxbusinessdetails.connectors.UpdateIncomeSourceConnector
 import uk.gov.hmrc.incometaxbusinessdetails.models.updateIncomeSource.UpdateIncomeSourceResponseModel
-import uk.gov.hmrc.incometaxbusinessdetails.models.updateIncomeSource.request.UpdateIncomeSourceRequestModel
-import uk.gov.hmrc.incometaxbusinessdetails.connectors.ViewAndChangeConnector
 import uk.gov.hmrc.incometaxbusinessdetails.constants.UpdateIncomeSourceTestConstants
 import uk.gov.hmrc.incometaxbusinessdetails.constants.UpdateIncomeSourceTestConstants.{successResponse, failureResponse}
 import uk.gov.hmrc.incometaxbusinessdetails.models.updateIncomeSource.*
@@ -33,10 +31,9 @@ class UpdateIncomeSourceServiceSpec extends TestSupport {
 
   trait Setup {
     val updateIncomeSourceConnector: UpdateIncomeSourceConnector = mock(classOf[UpdateIncomeSourceConnector])
-    val viewAndChangeConnector: ViewAndChangeConnector = mock(classOf[ViewAndChangeConnector])
     val service = new UpdateIncomeSourceService(
       updateIncomeSourceConnector,
-      viewAndChangeConnector
+
     )
   }
 
@@ -51,19 +48,18 @@ class UpdateIncomeSourceServiceSpec extends TestSupport {
         await(result) shouldBe successResponse
       }
     }
+  }
 
-    "the call to DES is unsuccessful" should {
-      "call the view and change connector and return its response" in new Setup {
-        when(updateIncomeSourceConnector.updateIncomeSource(any[UpdateIncomeSourceRequestModel])(any()))
-          .thenReturn(Future.successful(failureResponse))
-        when(viewAndChangeConnector.updateIncomeSource(any[UpdateIncomeSourceRequestModel])(any()))
-          .thenReturn(Future.successful(successResponse))
-        val result: Future[UpdateIncomeSourceResponse] = service.updateIncomeSource(UpdateIncomeSourceTestConstants.request)(hc, ec)
-        await(result) shouldBe successResponse
-      }
+  s"the call to DES fails" should {
+    s"return the failure model" in new Setup {
+      when(updateIncomeSourceConnector.updateIncomeSource(matches(UpdateIncomeSourceTestConstants.request))(any()))
+        .thenReturn(Future.successful(failureResponse))
+
+      val result: Future[UpdateIncomeSourceResponse] = service.updateIncomeSource(UpdateIncomeSourceTestConstants.request)(hc, ec)
+
+      await(result) shouldBe failureResponse
     }
   }
-  
-  }
 
 
+}

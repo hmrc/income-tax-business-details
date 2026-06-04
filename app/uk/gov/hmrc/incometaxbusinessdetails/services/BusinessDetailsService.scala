@@ -24,15 +24,14 @@ import play.api.mvc.Result
 import play.api.mvc.Results.Status
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.incometaxbusinessdetails.config.AppConfig
-import uk.gov.hmrc.incometaxbusinessdetails.connectors.hip.{GetBusinessDetailsConnector, ViewAndChangeConnector}
-import uk.gov.hmrc.incometaxbusinessdetails.models.hip.incomeSourceDetails.IncomeSourceDetailsModel
+import uk.gov.hmrc.incometaxbusinessdetails.connectors.hip.GetBusinessDetailsConnector
+import uk.gov.hmrc.incometaxbusinessdetails.models.hip.incomeSourceDetails._
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class BusinessDetailsService @Inject()(val getBusinessDetailsFromHipConnector: GetBusinessDetailsConnector,
-                                       val viewAndChangeConnector: ViewAndChangeConnector,
                                        val appConfig: AppConfig
                                       ) extends Logging {
 
@@ -40,10 +39,10 @@ class BusinessDetailsService @Inject()(val getBusinessDetailsFromHipConnector: G
                         (implicit headerCarrier: HeaderCarrier,
                          ec:ExecutionContext): Future[Result] = {
     logger.debug("Requesting Income Source Details from Connector")
-    getBusinessDetailsFromHipConnector.getBusinessDetails(nino, models.hip.incomeSourceDetails.Nino).flatMap {
-      case success: models.hip.incomeSourceDetails.IncomeSourceDetailsModel =>
-        Future(Status(OK)(Json.toJson(success)))
-      case _ => viewAndChangeConnector.getBusinessDetailsByNino(nino).map(res => Status(res.status)(res.json))
+    getBusinessDetailsFromHipConnector.getBusinessDetails(nino, models.hip.incomeSourceDetails.Nino).map {
+      case success: IncomeSourceDetailsModel => Status(OK)(Json.toJson(success))
+      case notFound: IncomeSourceDetailsNotFound => Status(notFound.status)(Json.toJson(notFound))
+      case err: IncomeSourceDetailsError => Status(err.status)(Json.toJson(err))
     }
   }
 }
