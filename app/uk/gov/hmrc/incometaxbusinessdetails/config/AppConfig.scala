@@ -31,7 +31,6 @@ class AppConfig @Inject()(servicesConfig: ServicesConfig) {
   private def loadConfig(key: String) = servicesConfig.getString(key)
 
   val appName: String = servicesConfig.getString("appName")
-  val viewAndChangeBaseUrl: String = servicesConfig.baseUrl("income-tax-view-change")
   lazy val hipUrl: String = servicesConfig.baseUrl("hip")
   
   private def getHipCredentials: String = {
