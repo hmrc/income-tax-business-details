@@ -39,7 +39,7 @@ class IncomeSourceDetailsControllerISpec extends ComponentSpecBase {
           And("I wiremock stub a successful getIncomeSourceDetails response")
           BusinessDetailsHipStub.stubGetHipBusinessDetails(testMtdRef, incomeSourceDetailsSuccess)
 
-          When(s"I call GET income-tax-view-change/nino-lookup/$testMtdRef")
+          When(s"I call GET income-tax-business-details/nino-lookup/$testMtdRef")
           val res = BusinessDetailsFrontend.getNino(testMtdRef)
 
           BusinessDetailsHipStub.verifyGetHipBusinessDetails(testMtdRef)
@@ -60,7 +60,7 @@ class IncomeSourceDetailsControllerISpec extends ComponentSpecBase {
           And("I wiremock stub an error response")
           BusinessDetailsHipStub.stubGetBusinessDetailsError(testMtdRef)
 
-          When(s"I call GET income-tax-view-change/nino-lookup/$testMtdRef")
+          When(s"I call GET income-tax-business-details/nino-lookup/$testMtdRef")
           val res = BusinessDetailsFrontend.getNino(testMtdRef)
 
           BusinessDetailsHipStub.verifyGetHipBusinessDetails(testMtdRef)
@@ -79,7 +79,7 @@ class IncomeSourceDetailsControllerISpec extends ComponentSpecBase {
       "return an error" in {
         isAuthorised(false)
 
-        When(s"I call GET income-tax-view-change/nino-lookup/$testMtdRef")
+        When(s"I call GET income-tax-business-details/nino-lookup/$testMtdRef")
         val res = BusinessDetailsFrontend.getNino(testMtdRef)
 
         res should have(
@@ -102,7 +102,7 @@ class IncomeSourceDetailsControllerISpec extends ComponentSpecBase {
           And("I wiremock stub a successful getIncomeSourceDetails response")
           BusinessDetailsHipStub.stubGetHipBusinessDetails(testMtdRef, incomeSourceDetailsSuccess)
 
-          When(s"I call GET income-tax-view-change/income-sources/$testMtdRef")
+          When(s"I call GET income-tax-business-details/income-sources/$testMtdRef")
           val res = BusinessDetailsFrontend.getIncomeSources(testMtdRef)
 
           BusinessDetailsHipStub.verifyGetHipBusinessDetails(testMtdRef)
@@ -123,7 +123,7 @@ class IncomeSourceDetailsControllerISpec extends ComponentSpecBase {
           And("I wiremock stub a 422 not found response")
           BusinessDetailsHipStub.stubGetHipBusinessDetails422NotFound(testMtdRef)
 
-          When(s"I call GET income-tax-view-change/income-sources/$testMtdRef")
+          When(s"I call GET income-tax-business-details/income-sources/$testMtdRef")
           val res = BusinessDetailsFrontend.getIncomeSources(testMtdRef)
 
           BusinessDetailsHipStub.verifyGetHipBusinessDetails(testMtdRef)
@@ -144,7 +144,7 @@ class IncomeSourceDetailsControllerISpec extends ComponentSpecBase {
           And("I wiremock stub an error response")
           BusinessDetailsHipStub.stubGetBusinessDetailsError(testMtdRef)
 
-          When(s"I call GET income-tax-view-change/income-sources/$testMtdRef")
+          When(s"I call GET income-tax-business-details/income-sources/$testMtdRef")
           val res = BusinessDetailsFrontend.getIncomeSources(testMtdRef)
 
           BusinessDetailsHipStub.verifyGetHipBusinessDetails(testMtdRef)
@@ -163,7 +163,7 @@ class IncomeSourceDetailsControllerISpec extends ComponentSpecBase {
       "return an error" in {
         isAuthorised(false)
 
-        When(s"I call GET income-tax-view-change/income-sources/$testMtdRef")
+        When(s"I call GET income-tax-business-details/income-sources/$testMtdRef")
         val res = BusinessDetailsFrontend.getIncomeSources(testMtdRef)
 
         res should have(
