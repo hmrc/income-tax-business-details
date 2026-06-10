@@ -40,7 +40,7 @@ class IncomeSourceDetailsControllerISpec extends ComponentSpecBase {
           BusinessDetailsHipStub.stubGetHipBusinessDetails(testMtdRef, incomeSourceDetailsSuccess)
 
           When(s"I call GET income-tax-view-change/nino-lookup/$testMtdRef")
-          val res = IncomeTaxViewChange.getNino(testMtdRef)
+          val res = BusinessDetailsFrontend.getNino(testMtdRef)
 
           BusinessDetailsHipStub.verifyGetHipBusinessDetails(testMtdRef)
 
@@ -61,7 +61,7 @@ class IncomeSourceDetailsControllerISpec extends ComponentSpecBase {
           BusinessDetailsHipStub.stubGetBusinessDetailsError(testMtdRef)
 
           When(s"I call GET income-tax-view-change/nino-lookup/$testMtdRef")
-          val res = IncomeTaxViewChange.getNino(testMtdRef)
+          val res = BusinessDetailsFrontend.getNino(testMtdRef)
 
           BusinessDetailsHipStub.verifyGetHipBusinessDetails(testMtdRef)
 
@@ -80,7 +80,7 @@ class IncomeSourceDetailsControllerISpec extends ComponentSpecBase {
         isAuthorised(false)
 
         When(s"I call GET income-tax-view-change/nino-lookup/$testMtdRef")
-        val res = IncomeTaxViewChange.getNino(testMtdRef)
+        val res = BusinessDetailsFrontend.getNino(testMtdRef)
 
         res should have(
           httpStatus(UNAUTHORIZED),
@@ -103,7 +103,7 @@ class IncomeSourceDetailsControllerISpec extends ComponentSpecBase {
           BusinessDetailsHipStub.stubGetHipBusinessDetails(testMtdRef, incomeSourceDetailsSuccess)
 
           When(s"I call GET income-tax-view-change/income-sources/$testMtdRef")
-          val res = IncomeTaxViewChange.getIncomeSources(testMtdRef)
+          val res = BusinessDetailsFrontend.getIncomeSources(testMtdRef)
 
           BusinessDetailsHipStub.verifyGetHipBusinessDetails(testMtdRef)
 
@@ -124,7 +124,7 @@ class IncomeSourceDetailsControllerISpec extends ComponentSpecBase {
           BusinessDetailsHipStub.stubGetHipBusinessDetails422NotFound(testMtdRef)
 
           When(s"I call GET income-tax-view-change/income-sources/$testMtdRef")
-          val res = IncomeTaxViewChange.getIncomeSources(testMtdRef)
+          val res = BusinessDetailsFrontend.getIncomeSources(testMtdRef)
 
           BusinessDetailsHipStub.verifyGetHipBusinessDetails(testMtdRef)
 
@@ -145,7 +145,7 @@ class IncomeSourceDetailsControllerISpec extends ComponentSpecBase {
           BusinessDetailsHipStub.stubGetBusinessDetailsError(testMtdRef)
 
           When(s"I call GET income-tax-view-change/income-sources/$testMtdRef")
-          val res = IncomeTaxViewChange.getIncomeSources(testMtdRef)
+          val res = BusinessDetailsFrontend.getIncomeSources(testMtdRef)
 
           BusinessDetailsHipStub.verifyGetHipBusinessDetails(testMtdRef)
 
@@ -164,7 +164,7 @@ class IncomeSourceDetailsControllerISpec extends ComponentSpecBase {
         isAuthorised(false)
 
         When(s"I call GET income-tax-view-change/income-sources/$testMtdRef")
-        val res = IncomeTaxViewChange.getIncomeSources(testMtdRef)
+        val res = BusinessDetailsFrontend.getIncomeSources(testMtdRef)
 
         res should have(
           httpStatus(UNAUTHORIZED),

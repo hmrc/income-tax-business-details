@@ -35,7 +35,7 @@ class UpdateCustomerFactControllerISpec extends ComponentSpecBase {
           HipUpdateCustomerFactStub.stubPutUpdateCustomerFactSuccess(mtdId)
 
           When(s"I call PUT /customer-facts/update/$mtdId")
-          val res = IncomeTaxViewChange.putUpdateCustomerFacts(mtdId)
+          val res = BusinessDetailsFrontend.putUpdateCustomerFacts(mtdId)
 
           HipUpdateCustomerFactStub.verifyPutUpdateCustomerFact(mtdId)
 
@@ -52,7 +52,7 @@ class UpdateCustomerFactControllerISpec extends ComponentSpecBase {
           HipUpdateCustomerFactStub.stubPutUpdateCustomerFactBadRequest(mtdId)
 
           When(s"I call PUT /customer-facts/update/$mtdId")
-          val res = IncomeTaxViewChange.putUpdateCustomerFacts(mtdId)
+          val res = BusinessDetailsFrontend.putUpdateCustomerFacts(mtdId)
 
           HipUpdateCustomerFactStub.verifyPutUpdateCustomerFact(mtdId)
 
@@ -69,7 +69,7 @@ class UpdateCustomerFactControllerISpec extends ComponentSpecBase {
           HipUpdateCustomerFactStub.stubPutUpdateCustomerFactUnprocessable(mtdId)
 
           When(s"I call PUT /customer-facts/update/$mtdId")
-          val res = IncomeTaxViewChange.putUpdateCustomerFacts(mtdId)
+          val res = BusinessDetailsFrontend.putUpdateCustomerFacts(mtdId)
 
           HipUpdateCustomerFactStub.verifyPutUpdateCustomerFact(mtdId)
 
@@ -86,7 +86,7 @@ class UpdateCustomerFactControllerISpec extends ComponentSpecBase {
           HipUpdateCustomerFactStub.stubPutUpdateCustomerFactServerError(mtdId)
 
           When(s"I call PUT /customer-facts/update/$mtdId")
-          val res = IncomeTaxViewChange.putUpdateCustomerFacts(mtdId)
+          val res = BusinessDetailsFrontend.putUpdateCustomerFacts(mtdId)
 
           HipUpdateCustomerFactStub.verifyPutUpdateCustomerFact(mtdId)
 
@@ -103,7 +103,7 @@ class UpdateCustomerFactControllerISpec extends ComponentSpecBase {
           HipUpdateCustomerFactStub.stubPutUpdateCustomerFactServiceUnavailable(mtdId)
 
           When(s"I call PUT /customer-facts/update/$mtdId")
-          val res = IncomeTaxViewChange.putUpdateCustomerFacts(mtdId)
+          val res = BusinessDetailsFrontend.putUpdateCustomerFacts(mtdId)
 
           HipUpdateCustomerFactStub.verifyPutUpdateCustomerFact(mtdId)
 
@@ -119,7 +119,7 @@ class UpdateCustomerFactControllerISpec extends ComponentSpecBase {
         isAuthorised(false)
 
         When(s"I call PUT /customer-facts/update/$mtdId")
-        val res = IncomeTaxViewChange.putUpdateCustomerFacts(mtdId)
+        val res = BusinessDetailsFrontend.putUpdateCustomerFacts(mtdId)
 
         res should have(
           httpStatus(UNAUTHORIZED),

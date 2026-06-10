@@ -37,7 +37,7 @@ class BusinessDetailsControllerISpec extends ComponentSpecBase {
           BusinessDetailsHipCallWithNinoStub.stubGetHipBusinessDetails(testNino, incomeSourceDetailsSuccess)
 
           When(s"I call GET /get-business-details/nino/$testNino")
-          val res = IncomeTaxViewChange.getBusinessDetails(testNino)
+          val res = BusinessDetailsFrontend.getBusinessDetails(testNino)
           BusinessDetailsHipCallWithNinoStub.verifyGetHipBusinessDetails(testNino)
 
           Then("a successful response is returned with the correct business details")
@@ -57,7 +57,7 @@ class BusinessDetailsControllerISpec extends ComponentSpecBase {
         isAuthorised(false)
 
         When(s"I call GET /get-business-details/nino/$testNino")
-        val res = IncomeTaxViewChange.getBusinessDetails(testNino)
+        val res = BusinessDetailsFrontend.getBusinessDetails(testNino)
 
         res should have(
           httpStatus(UNAUTHORIZED),

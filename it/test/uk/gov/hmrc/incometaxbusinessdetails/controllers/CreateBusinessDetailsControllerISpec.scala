@@ -43,7 +43,7 @@ class CreateBusinessDetailsControllerISpec extends ComponentSpecBase {
               testCreateBusinessDetailsSuccessResponse)
 
           When(s"I call POST /income-tax/income-sources/mtdbsa/$testMtdbsa/ITSA/business")
-          val res = IncomeTaxViewChange.createBusinessDetails(testCreateSelfEmploymentIncomeSourceRequest())
+          val res = BusinessDetailsFrontend.createBusinessDetails(testCreateSelfEmploymentIncomeSourceRequest())
 
           HipCreateBusinessDetailsStub.verifyCreateHipBusinessDetails(testCreateSelfEmploymentHipIncomeSourceRequest())
 
@@ -63,7 +63,7 @@ class CreateBusinessDetailsControllerISpec extends ComponentSpecBase {
             .stubPostHipBusinessDetails(CREATED, testCreateUKPropertyHipRequest, testCreateBusinessDetailsSuccessResponse)
 
           When(s"I call POST /income-tax/income-sources/mtdbsa/$testMtdbsa/ITSA/business")
-          val res = IncomeTaxViewChange.createBusinessDetails(testCreateUKPropertyRequest)
+          val res = BusinessDetailsFrontend.createBusinessDetails(testCreateUKPropertyRequest)
 
           HipCreateBusinessDetailsStub.verifyCreateHipBusinessDetails(testCreateUKPropertyHipRequest)
 
@@ -83,7 +83,7 @@ class CreateBusinessDetailsControllerISpec extends ComponentSpecBase {
             .stubPostHipBusinessDetails(CREATED, testCreateForeignPropertyHipRequest, testCreateBusinessDetailsSuccessResponse)
 
           When(s"I call POST /income-tax/income-sources/mtdbsa/$testMtdbsa/ITSA/business")
-          val res = IncomeTaxViewChange.createBusinessDetails(testCreateForeignPropertyRequest)
+          val res = BusinessDetailsFrontend.createBusinessDetails(testCreateForeignPropertyRequest)
 
           HipCreateBusinessDetailsStub.verifyCreateHipBusinessDetails(testCreateForeignPropertyHipRequest)
 
@@ -98,7 +98,7 @@ class CreateBusinessDetailsControllerISpec extends ComponentSpecBase {
             .stubPostHipBusinessDetails(CREATED, testCreateHipForeignPropertyRequestNoFlag, testCreateBusinessDetailsSuccessResponse)
 
           When(s"I call POST /income-tax/income-sources/mtdbsa/$testMtdbsa/ITSA/business")
-          val res = IncomeTaxViewChange.createBusinessDetails(testCreateForeignPropertyRequestNoFlag)
+          val res = BusinessDetailsFrontend.createBusinessDetails(testCreateForeignPropertyRequestNoFlag)
 
           HipCreateBusinessDetailsStub.verifyCreateHipBusinessDetails(testCreateHipForeignPropertyRequestNoFlag)
 
@@ -116,7 +116,7 @@ class CreateBusinessDetailsControllerISpec extends ComponentSpecBase {
         val invalidRequest = Json.obj()
 
         When(s"I call POST /income-tax/income-sources/mtdbsa/$testMtdbsa/ITSA/business")
-        val res = IncomeTaxViewChange.createBusinessDetails(invalidRequest)
+        val res = BusinessDetailsFrontend.createBusinessDetails(invalidRequest)
 
         Then(s"a status of $BAD_REQUEST is returned ")
 
@@ -137,7 +137,7 @@ class CreateBusinessDetailsControllerISpec extends ComponentSpecBase {
           )
 
           When(s"I call POST /income-tax/income-sources/mtdbsa/$testMtdbsa/ITSA/business")
-          val res = IncomeTaxViewChange.createBusinessDetails(
+          val res = BusinessDetailsFrontend.createBusinessDetails(
             Json.toJson(testCreateHipForeignPropertyRequestNoFlag)
           )
 
