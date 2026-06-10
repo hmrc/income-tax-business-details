@@ -35,7 +35,7 @@ class UpdateIncomeSourceControllerISpec extends ComponentSpecBase {
           IfUpdateIncomeSourceStub.stubPutIfUpdateIncomeSource(requestJson.toString(), successResponseJson.toString())
 
           When(s"I call PUT /update-income-source")
-          val res = IncomeTaxViewChange.putUpdateIncomeSource(requestJson)
+          val res = BusinessDetailsFrontend.putUpdateIncomeSource(requestJson)
 
           IfUpdateIncomeSourceStub.verifyPutIfUpdateIncomeSource(requestJson.toString())
 
@@ -52,7 +52,7 @@ class UpdateIncomeSourceControllerISpec extends ComponentSpecBase {
           isAuthorised(true)
 
           When(s"I call PUT /update-income-source with invalid request")
-          val res = IncomeTaxViewChange.putUpdateIncomeSource(invalidRequestJson)
+          val res = BusinessDetailsFrontend.putUpdateIncomeSource(invalidRequestJson)
 
           Then(s"a status of ${BAD_REQUEST} is returned ")
 
@@ -68,7 +68,7 @@ class UpdateIncomeSourceControllerISpec extends ComponentSpecBase {
           IfUpdateIncomeSourceStub.stubPutIfUpdateIncomeSourceError()
 
           When(s"I call PUT /update-income-source")
-          val res = IncomeTaxViewChange.putUpdateIncomeSource(requestJson)
+          val res = BusinessDetailsFrontend.putUpdateIncomeSource(requestJson)
 
           IfUpdateIncomeSourceStub.verifyPutIfUpdateIncomeSource(requestJson.toString())
 
@@ -87,7 +87,7 @@ class UpdateIncomeSourceControllerISpec extends ComponentSpecBase {
           isAuthorised(false)
 
           When(s"I call PUT /update-income-source")
-          val res = IncomeTaxViewChange.putUpdateIncomeSource(requestJson)
+          val res = BusinessDetailsFrontend.putUpdateIncomeSource(requestJson)
 
           res should have(
             httpStatus(UNAUTHORIZED),

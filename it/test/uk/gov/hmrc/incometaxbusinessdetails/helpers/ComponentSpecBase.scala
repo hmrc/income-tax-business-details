@@ -77,7 +77,7 @@ trait ComponentSpecBase extends TestSuite with CustomMatchers
     }
   }
 
-  object IncomeTaxViewChange {
+  object BusinessDetailsFrontend {
     def get(uri: String): WSResponse = buildClient(uri).get().futureValue
     def put(uri: String, requestBody: JsValue): WSResponse = buildClient(uri).put(requestBody).futureValue
     def getNino(mtdRef: String): WSResponse = get(s"/nino-lookup/$mtdRef")
