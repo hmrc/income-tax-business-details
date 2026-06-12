@@ -26,6 +26,7 @@ import uk.gov.hmrc.incometaxbusinessdetails.models.hip.*
 import uk.gov.hmrc.incometaxbusinessdetails.models.hip.incomeSourceDetails.{CreateBusinessDetailsHipErrorResponse, IncomeSource}
 
 import java.time.LocalDate
+import java.util.UUID
 
 class CreateBusinessDetailsControllerSpec extends ControllerBaseSpec with MockMicroserviceAuthConnector with MockCreateBusinessDetailsService {
   val mockCC: ControllerComponents = stubControllerComponents()
@@ -46,7 +47,9 @@ class CreateBusinessDetailsControllerSpec extends ControllerBaseSpec with MockMi
           fakePostRequest.withJsonBody(
             Json.toJson(
               CreateForeignPropertyIncomeSourceHipRequest(mtdbsa,
-                PropertyDetails(Some(testDate), testDate)
+                PropertyDetails(Some(testDate), testDate),
+                addIncomeSource = Some(true),
+                idempotencyKey = Some(UUID.randomUUID().toString)
               )
             )
           )
@@ -96,7 +99,9 @@ class CreateBusinessDetailsControllerSpec extends ControllerBaseSpec with MockMi
                     cessationDate = None,
                     cessationReason = None
                   )
-                )
+                ),
+                addIncomeSource = Some(true),
+                idempotencyKey = Some(UUID.randomUUID().toString)
               )
             )
           )
@@ -116,7 +121,9 @@ class CreateBusinessDetailsControllerSpec extends ControllerBaseSpec with MockMi
           fakePostRequest.withJsonBody(
             Json.toJson(
               CreateForeignPropertyIncomeSourceHipRequest(mtdbsa,
-                PropertyDetails(Some(testDate), testDate)
+                PropertyDetails(Some(testDate), testDate),
+                addIncomeSource = Some(true),
+                idempotencyKey = Some(UUID.randomUUID().toString)
               )
             )
           )
@@ -137,7 +144,9 @@ class CreateBusinessDetailsControllerSpec extends ControllerBaseSpec with MockMi
           fakePostRequest.withJsonBody(
             Json.toJson(
               CreateUKPropertyIncomeSourceHipRequest(mtdbsa,
-                PropertyDetails(Some(testDate), testDate)
+                PropertyDetails(Some(testDate), testDate),
+                addIncomeSource = Some(true),
+                idempotencyKey = Some(UUID.randomUUID().toString)
               )
             )
           )

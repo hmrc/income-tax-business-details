@@ -23,6 +23,7 @@ import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.http.HttpResponse
 
 import java.time.LocalDate
+import java.util.UUID
 
 object CreateHipBusinessDetailsTestConstants {
 
@@ -44,7 +45,9 @@ object CreateHipBusinessDetailsTestConstants {
           cessationDate = None,
           cessationReason = None
         )
-      )
+      ),
+      addIncomeSource = Some(true),
+      idempotencyKey = Some(UUID.randomUUID().toString)
     )
 
   val successResponse = List(IncomeSource("AAIS12345678901"))

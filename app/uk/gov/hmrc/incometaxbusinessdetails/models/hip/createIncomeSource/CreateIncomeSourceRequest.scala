@@ -40,7 +40,8 @@ object CreateIncomeSourceHipRequest {
 // *                                                   Self-employment                                                 *
 // *********************************************************************************************************************
 
-final case class CreateBusinessIncomeSourceHipRequest(mtdbsa: String, businessDetails: List[BusinessDetails]) extends CreateIncomeSourceHipRequest {
+//TODO: Make idempotencyKey and addIncomeSource mandatory once we enabled FS in prod
+final case class CreateBusinessIncomeSourceHipRequest(mtdbsa: String, businessDetails: List[BusinessDetails], idempotencyKey: Option[String], addIncomeSource: Option[Boolean]) extends CreateIncomeSourceHipRequest {
   require(mtdbsa.matches("^[A-Z]{4}[0-9]{11}$"), "MTDBSA ID should be of 11 characters and a specific format")
   require(businessDetails.length == 1, "Only single business can be created at a time")
 }
@@ -88,11 +89,13 @@ final case class PropertyDetails(tradingStartDate: Option[String],
   require(tradingStartDate.contains(startDate), "Trading start date and start date must be the same")
 }
 
-final case class CreateForeignPropertyIncomeSourceHipRequest(mtdbsa: String, foreignPropertyDetails: PropertyDetails) extends CreateIncomeSourceHipRequest {
+//TODO: Make idempotencyKey and addIncomeSource mandatory once we enabled FS in prod
+final case class CreateForeignPropertyIncomeSourceHipRequest(mtdbsa: String, foreignPropertyDetails: PropertyDetails, idempotencyKey: Option[String], addIncomeSource: Option[Boolean]) extends CreateIncomeSourceHipRequest {
   require(mtdbsa.matches("^[A-Z]{4}[0-9]{11}$"), "MTDBSA ID should be of 11 characters and a specific format")
 }
 
-final case class CreateUKPropertyIncomeSourceHipRequest(mtdbsa: String, ukPropertyDetails: PropertyDetails) extends CreateIncomeSourceHipRequest{
+//TODO: Make idempotencyKey and addIncomeSource mandatory once we enabled FS in prod
+final case class CreateUKPropertyIncomeSourceHipRequest(mtdbsa: String, ukPropertyDetails: PropertyDetails, idempotencyKey: Option[String], addIncomeSource: Option[Boolean]) extends CreateIncomeSourceHipRequest{
   require(mtdbsa.matches("^[A-Z]{4}[0-9]{11}$"), "MTDBSA ID should be of 11 characters and a specific format")
 }
 

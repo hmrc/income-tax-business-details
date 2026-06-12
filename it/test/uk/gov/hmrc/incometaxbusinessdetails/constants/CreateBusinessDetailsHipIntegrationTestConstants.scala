@@ -21,6 +21,7 @@ import uk.gov.hmrc.incometaxbusinessdetails.models.hip.incomeSourceDetails.{Crea
 import play.api.libs.json.{JsValue, Json}
 
 import java.time.LocalDate
+import java.util.UUID
 
 object CreateBusinessDetailsHipIntegrationTestConstants {
 
@@ -65,7 +66,9 @@ object CreateBusinessDetailsHipIntegrationTestConstants {
           cessationDate = None,
           cessationReason = None
         )
-      )
+      ),
+      idempotencyKey = None,
+      addIncomeSource = None
     )
 
   def createBusinessHipIncomeSourceRequest(): CreateBusinessIncomeSourceHipRequest =
@@ -82,7 +85,9 @@ object CreateBusinessDetailsHipIntegrationTestConstants {
           cessationDate = None,
           cessationReason = None
         )
-      )
+      ),
+      idempotencyKey = None,
+      addIncomeSource = None
     )
 
   def testCreateSelfEmploymentIncomeSourceRequest(): JsValue = Json.toJson(createBusinessIncomeSourceRequest())
@@ -96,7 +101,9 @@ object CreateBusinessDetailsHipIntegrationTestConstants {
         PropertyDetails(
           tradingStartDate = Some(testDate),
           startDate = testDate
-        )
+        ),
+        idempotencyKey = None,
+        addIncomeSource = None
       )
     )
 
@@ -107,7 +114,9 @@ object CreateBusinessDetailsHipIntegrationTestConstants {
         uk.gov.hmrc.incometaxbusinessdetails.models.hip.createIncomeSource.PropertyDetails(
           tradingStartDate = Some(testDate),
           startDate = testDate
-        )
+        ),
+        idempotencyKey = None,
+        addIncomeSource = None
       )
     )
 
@@ -118,7 +127,9 @@ object CreateBusinessDetailsHipIntegrationTestConstants {
         PropertyDetails(
           tradingStartDate = Some(testDate),
           startDate = testDate
-        )
+        ),
+        idempotencyKey = None,
+        addIncomeSource = None
       )
     )
 
@@ -129,7 +140,9 @@ object CreateBusinessDetailsHipIntegrationTestConstants {
         uk.gov.hmrc.incometaxbusinessdetails.models.hip.createIncomeSource.PropertyDetails(
           tradingStartDate = Some(testDate),
           startDate = testDate
-        )
+        ),
+        idempotencyKey = None,
+        addIncomeSource = None
       )
     )
 
@@ -140,7 +153,9 @@ object CreateBusinessDetailsHipIntegrationTestConstants {
         PropertyDetails(
           tradingStartDate = Some(testDate),
           startDate = testDate
-        )
+        ),
+        idempotencyKey = None,
+        addIncomeSource = None
       )
     )
 
@@ -151,7 +166,9 @@ object CreateBusinessDetailsHipIntegrationTestConstants {
         uk.gov.hmrc.incometaxbusinessdetails.models.hip.createIncomeSource.PropertyDetails(
           tradingStartDate = Some(testDate),
           startDate = testDate
-        )
+        ),
+        idempotencyKey = None,
+        addIncomeSource = None
       )
     )
 
