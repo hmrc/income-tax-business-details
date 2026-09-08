@@ -43,6 +43,7 @@ object HipPropertyDetailsTestConstants {
     firstAccountingPeriodEndDate = Some(LocalDate.of(2016, 1, 1)),
     incomeSourceType = Some("uk-property"),
     contextualTaxYear = Some("2015"),
+    deleted = Some(false),
     tradingStartDate = Some(LocalDate.parse("2015-01-01")),
     latencyDetails = Some(LatencyDetails(
       latencyEndDate = LocalDate.of(2022, 1, 1),
@@ -63,6 +64,7 @@ object HipPropertyDetailsTestConstants {
     firstAccountingPeriodEndDate = None,
     incomeSourceType = None,
     contextualTaxYear = None,
+    deleted = None,
     tradingStartDate = None,
     latencyDetails = None,
     quarterTypeElection = None
@@ -105,6 +107,7 @@ object HipPropertyDetailsTestConstants {
     "firstAccountingPeriodEndDate" -> "2016-01-01",
     "incomeSourceType" -> "02",
     "contextualTaxYear" -> "2015",
+    "deleted" -> false,
     "tradingSDate" -> "2015-01-01",
     "latencyDetails" -> Json.obj(
       "latencyEndDate" -> "2022-01-01",
@@ -132,6 +135,7 @@ object HipPropertyDetailsTestConstants {
     "firstAccountingPeriodEndDate" -> "2016-01-01",
     "incomeSourceType" -> "02",
     "contextualTaxYear" -> "2015",
+    "deleted" -> false,
     "tradingSDate" -> "2015-01-01",
     "latencyDetails" -> Json.obj(
       "latencyEndDate" -> "2022-01-01",
@@ -155,6 +159,7 @@ object HipPropertyDetailsTestConstants {
     "firstAccountingPeriodEndDate" -> "2016-01-01",
     "incomeSourceType" -> "uk-property",
     "contextualTaxYear" -> "2015",
+    "deleted" -> false,
     "tradingStartDate" -> "2015-01-01",
     "latencyDetails" -> Json.obj(
       "latencyEndDate" -> "2022-01-01",
@@ -184,6 +189,7 @@ object HipPropertyDetailsTestConstants {
     "firstAccountingPeriodEndDate" -> "2016-01-01",
     "incomeSourceType" -> "uk-property",
     "contextualTaxYear" -> "2015",
+    "deleted" -> false,
     "tradingStartDate" -> "2015-01-01",
     "latencyDetails" -> Json.obj(
       "latencyEndDate" -> "2022-01-01",

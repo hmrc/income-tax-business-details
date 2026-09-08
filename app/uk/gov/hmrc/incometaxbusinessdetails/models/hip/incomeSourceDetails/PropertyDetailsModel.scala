@@ -31,6 +31,7 @@ case class PropertyDetailsModel(incomeSourceId: String,
                                 firstAccountingPeriodEndDate: Option[LocalDate],
                                 incomeSourceType: Option[String],
                                 contextualTaxYear: Option[String],
+                                deleted: Option[Boolean],
                                 tradingStartDate: Option[LocalDate],
                                 latencyDetails: Option[LatencyDetails],
                                 quarterTypeElection: Option[QuarterTypeElection])
@@ -49,6 +50,7 @@ object PropertyDetailsModel extends CustomReads {
                       firstAccountingPeriodEndDate: Option[LocalDate],
                       incomeSourceType: Option[String],
                       contextualTaxYear: Option[String],
+                      deleted: Option[Boolean],
                       tradingStartDate: Option[LocalDate],
                       latencyDetails: Option[LatencyDetails],
                       quarterTypeElection: Option[QuarterTypeElection]): PropertyDetailsModel =
@@ -62,6 +64,7 @@ object PropertyDetailsModel extends CustomReads {
       firstAccountingPeriodEndDate,
       if(incomeSourceType.contains("02")) Some("uk-property") else if(incomeSourceType.contains("03")) Some("foreign-property") else None,
       contextualTaxYear,
+      deleted,
       tradingStartDate,
       latencyDetails,
       quarterTypeElection
@@ -80,6 +83,7 @@ object PropertyDetailsModel extends CustomReads {
       (__ \ "firstAccountingPeriodEndDate").readNullable[LocalDate] and
       (__ \ "incomeSourceType").readNullable[String] and
       (__ \ "contextualTaxYear").readNullable[String] and
+      (__ \ "deleted").readNullable[Boolean] and
       (__ \ "tradingSDate").readNullable[LocalDate] and
       (__ \ "latencyDetails").readNullable[LatencyDetails] and
       (__ \ "quarterTypeElection").readNullable[QuarterTypeElection]
