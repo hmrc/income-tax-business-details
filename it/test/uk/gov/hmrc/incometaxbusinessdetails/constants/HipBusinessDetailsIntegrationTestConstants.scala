@@ -74,6 +74,7 @@ object HipBusinessDetailsIntegrationTestConstants {
       firstAccountingPeriodEndDate = Some(LocalDate.parse("2017-06-01")),
       incomeSourceType = None,
       contextualTaxYear = None,
+      deleted = None,
       tradingStartDate = None,
       latencyDetails = None,
       quarterTypeElection = None
