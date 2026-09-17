@@ -19,12 +19,13 @@ package uk.gov.hmrc.incometaxbusinessdetails.connectors
 import uk.gov.hmrc.incometaxbusinessdetails.models.updateIncomeSource.request.UpdateIncomeSourceRequestModel
 import uk.gov.hmrc.incometaxbusinessdetails.models.updateIncomeSource.{UpdateIncomeSourceResponse, UpdateIncomeSourceResponseError, UpdateIncomeSourceResponseModel}
 import play.api.http.Status
-import play.api.http.Status.OK
+import play.api.http.Status.{BAD_GATEWAY, OK, SERVICE_UNAVAILABLE}
 import play.api.libs.json.Json
 import play.api.libs.ws.writeableOf_JsValue
 import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, StringContextOps}
 import uk.gov.hmrc.incometaxbusinessdetails.config.AppConfig
+
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -40,6 +41,8 @@ class UpdateIncomeSourceConnector @Inject()(val http: HttpClientV2,
     logger.debug("DEBUG " +
       s"Calling PUT $url \n\nHeaders: $headerCarrier \nAuth Headers: $headers \nBody:$body")
 
+    val CLIENT_CLOSED_REQUEST = 499
+
     http
       .put(url"$url")
       .withBody(Json.toJson[UpdateIncomeSourceRequestModel](body))
@@ -49,24 +52,28 @@ class UpdateIncomeSourceConnector @Inject()(val http: HttpClientV2,
         response =>
           response.status match {
             case OK =>
-              logger.debug(s"RESPONSE status:${response.status}") // TODO - MIPR-2637: Inform V&C team about no longer logging the response body
+              logger.debug(s"[UpdateIncomeSourceConnector][updateIncomeSource] RESPONSE status:${response.status}") // TODO - MIPR-2637: Inform V&C team about no longer logging the response body
               response.json.validate[UpdateIncomeSourceResponseModel].fold(
                 invalid => {
-                  logger.error(s"Validation Errors: $invalid")
+                  logger.error(s"[UpdateIncomeSourceConnector][updateIncomeSource] Validation Errors: $invalid")
                   UpdateIncomeSourceResponseError(Status.INTERNAL_SERVER_ERROR, "Json Validation Error. Parsing IF Update Income Source")
                 },
                 valid => {
-                  logger.info("successfully parsed response to UpdateIncomeSource")
+                  logger.info("[UpdateIncomeSourceConnector][updateIncomeSource] Successfully parsed response to UpdateIncomeSource")
                   valid
                 }
               )
+            case CLIENT_CLOSED_REQUEST | BAD_GATEWAY | SERVICE_UNAVAILABLE =>
+              logger.warn("[UpdateIncomeSourceConnector][updateIncomeSource] Downstream Timeout Error Response, " +
+                s"status: ${response.status}, body: ${response.body}")
+              UpdateIncomeSourceResponseError(response.status, response.body)
             case _ =>
-              logger.error(s"RESPONSE status: ${response.status}, body: ${response.body}")
+              logger.error(s"[UpdateIncomeSourceConnector][updateIncomeSource] RESPONSE status: ${response.status}, body: ${response.body}")
               UpdateIncomeSourceResponseError(response.status, response.body)
           }
       } recover {
       case ex =>
-        logger.error(s"Unexpected failed future, ${ex.getMessage}")
+        logger.error(s"[UpdateIncomeSourceConnector][updateIncomeSource] Unexpected failed future, ${ex.getMessage}")
         UpdateIncomeSourceResponseError(Status.INTERNAL_SERVER_ERROR, s"Unexpected failed future, ${ex.getMessage}")
     }
   }

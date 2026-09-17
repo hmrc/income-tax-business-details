@@ -42,6 +42,10 @@ class CreateBusinessDetailsHipConnector @Inject()(val http: HttpClientV2,
 
   def getHeaders: Seq[(String, String)] = appConfig.getHIPHeaders(CreateIncomeSourceHipApi, Some(xMessageTypeFor5265))
 
+  private def isDownstreamTimeout(status: Int): Boolean = {
+    status == 499 || status == 502 || status == 503
+  }
+
   def create(body: CreateIncomeSourceHipRequest)
             (implicit headerCarrier: HeaderCarrier): Future[Either[CreateBusinessDetailsHipErrorResponse, List[IncomeSource]]] = {
 
@@ -56,13 +60,17 @@ class CreateBusinessDetailsHipConnector @Inject()(val http: HttpClientV2,
         // TODO - MIPR-2637: Inform V&C team about no longer logging the response body
         response.json.validate[CreateBusinessDetailsHipModel].fold(
           invalidJson => {
-            logWithError(s"Invalid Json with $invalidJson")
+            logWithError(s"[CreateBusinessDetailsHipConnector][create] Invalid Json with $invalidJson")
             Left(CreateBusinessDetailsHipErrorResponse(response.status, response.body))
           },
           (res: CreateBusinessDetailsHipModel) => Right(res.success.incomeSourceIdDetails)
         )
+      case errorResponse if isDownstreamTimeout(errorResponse.status) =>
+        logWithError(s"[CreateBusinessDetailsHipConnector][create] Downstream Timeout Error with " +
+          s"response code: ${errorResponse.status} and body: ${errorResponse.json}")
+        Left(CreateBusinessDetailsHipErrorResponse(errorResponse.status, errorResponse.json.toString()))
       case errorResponse =>
-        logWithError(s"Error with response code: ${errorResponse.status} and body: ${errorResponse.json}")
+        logWithError(s"[CreateBusinessDetailsHipConnector][create] Error with response code: ${errorResponse.status} and body: ${errorResponse.json}")
         Left(CreateBusinessDetailsHipErrorResponse(errorResponse.status, errorResponse.json.toString()))
     } recover {
       case ex =>
