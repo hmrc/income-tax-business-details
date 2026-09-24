@@ -66,7 +66,7 @@ class CreateBusinessDetailsHipConnector @Inject()(val http: HttpClientV2,
           (res: CreateBusinessDetailsHipModel) => Right(res.success.incomeSourceIdDetails)
         )
       case errorResponse if isDownstreamTimeout(errorResponse.status) =>
-        logWithError(s"[CreateBusinessDetailsHipConnector][create] Downstream Timeout Error with " +
+        logWithWarn(s"[CreateBusinessDetailsHipConnector][create] Downstream Timeout Error with " +
           s"response code: ${errorResponse.status} and body: ${errorResponse.json}")
         Left(CreateBusinessDetailsHipErrorResponse(errorResponse.status, errorResponse.json.toString()))
       case errorResponse =>
@@ -80,5 +80,6 @@ class CreateBusinessDetailsHipConnector @Inject()(val http: HttpClientV2,
   }
 
   private val logWithError: String => Unit = message => Logger("application").error(message)
+  private val logWithWarn: String => Unit = message => Logger("application").warn(message)
   private val logWithDebug: String => Unit = message => Logger("application").debug(message)
 }
