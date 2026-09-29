@@ -21,7 +21,6 @@ import uk.gov.hmrc.incometaxbusinessdetails.models.hip.incomeSourceDetails.{Crea
 import play.api.libs.json.{JsValue, Json}
 
 import java.time.LocalDate
-import java.util.UUID
 
 object CreateBusinessDetailsHipIntegrationTestConstants {
 
