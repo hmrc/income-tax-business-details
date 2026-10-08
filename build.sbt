@@ -10,7 +10,11 @@ val appName = "income-tax-business-details"
 val currentScalaVersion = "3.3.6"
 ThisBuild / majorVersion := 0
 
-val wErrorScalacOption: String = "-Werror"
+val commonScalacOptions: Seq[String] = Seq(
+  "-deprecation",
+  "-unchecked",
+  "-Werror"
+)
 
 lazy val plugins: Seq[Plugins] = Seq.empty
 lazy val playSettings: Seq[Setting[_]] = Seq.empty
@@ -30,11 +34,7 @@ lazy val microservice = Project("income-tax-business-details", file("."))
   .settings(CodeCoverageSettings.settings: _*)
   .settings(defaultSettings(): _*)
   .settings(RoutesKeys.routesImport -= "controllers.Assets.Asset")
-  .settings(scalacOptions ++= Seq(
-    "-unchecked",
-    wErrorScalacOption
-  ))
-  .settings(scalacOptions += "-deprecation:false")
+  .settings(scalacOptions ++= commonScalacOptions)
   .settings(
     Test / Keys.fork := true,
     scalaVersion := currentScalaVersion,
@@ -64,16 +64,9 @@ lazy val it = project
   .dependsOn(microservice % "test->test")
   .settings(DefaultBuildSettings.itSettings())
   .enablePlugins(play.sbt.PlayScala)
-  .settings(
-    publish / skip := true
-  )
+  .settings(publish / skip := true)
   .settings(scalaVersion := currentScalaVersion)
-  .settings(
-    testForkedParallel := true
-  )
-  .settings(scalacOptions ++= Seq(
-    "-unchecked",
-    wErrorScalacOption
-  ))
+  .settings(testForkedParallel := true)
+  .settings(scalacOptions ++= commonScalacOptions)
   .settings(libraryDependencies ++= AppDependencies.it)
   .settings(ThisBuild / scalacOptions += "-Wconf:msg=Flag.*repeatedly:s")
