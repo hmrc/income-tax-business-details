@@ -16,11 +16,10 @@
 
 package uk.gov.hmrc.incometaxbusinessdetails.controllers
 
-import uk.gov.hmrc.incometaxbusinessdetails.models.hip.incomeSourceDetails.IncomeSourceDetailsError
 import play.api.http.Status.*
 import uk.gov.hmrc.incometaxbusinessdetails.constants.BaseIntegrationTestConstants.testNino
 import uk.gov.hmrc.incometaxbusinessdetails.constants.HipBusinessDetailsIntegrationTestConstants.jsonSuccessOutput
-import uk.gov.hmrc.incometaxbusinessdetails.constants.HipIncomeSourceIntegrationTestConstants.{incomeSourceDetailsError, incomeSourceDetailsSuccess}
+import uk.gov.hmrc.incometaxbusinessdetails.constants.HipIncomeSourceIntegrationTestConstants.incomeSourceDetailsSuccess
 import uk.gov.hmrc.incometaxbusinessdetails.helpers.ComponentSpecBase
 import uk.gov.hmrc.incometaxbusinessdetails.helpers.servicemocks.BusinessDetailsHipCallWithNinoStub
 
