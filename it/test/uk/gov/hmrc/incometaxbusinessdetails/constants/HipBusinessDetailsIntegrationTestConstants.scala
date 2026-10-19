@@ -46,6 +46,7 @@ object HipBusinessDetailsIntegrationTestConstants {
         faxNumber = Some("01332754256"),
         emailAddress = Some("stephen@manncorpone.co.uk"))),
       contextualTaxYear = Some("2015"),
+      deleted = Some(false),
       tradingStartDate = Some(LocalDate.parse("2017-01-01")),
       seasonal = Some(true),
       cessation = None,
@@ -117,6 +118,7 @@ object HipBusinessDetailsIntegrationTestConstants {
             "email" -> "stephen@manncorpone.co.uk"
           ),
           "contextualTaxYear" -> "2015",
+          "deleted" -> false,
           "tradingSDate" -> "2017-01-01",
           "seasonalFlag" -> true,
           "paperLessFlag" -> true,
@@ -179,6 +181,7 @@ object HipBusinessDetailsIntegrationTestConstants {
         |                "emailAddress": "stephen@manncorpone.co.uk"
         |            },
         |            "contextualTaxYear": "2015",
+        |            "deleted": false,
         |            "tradingStartDate": "2017-01-01",
         |            "seasonal": true,
         |            "paperless": true,
